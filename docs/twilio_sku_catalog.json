@@ -1,0 +1,65 @@
+{
+  "skus": [
+    { "theme":"Messaging (Sales & Marketing)","icon":"💬","category":"Messaging","sku":"US SMS Outbound (Standard)","unit":"segment","rack_rate":0.0083,"contract_rate":0.0047,"locked":true,"source":"contract_exhibit_A" },
+    { "theme":"Messaging (Sales & Marketing)","icon":"💬","category":"Messaging","sku":"US SMS Outbound (Toll-Free)","unit":"segment","rack_rate":0.0083,"contract_rate":0.0055,"locked":true,"source":"contract_exhibit_A" },
+    { "theme":"Voice & Calling","icon":"📞","category":"Voice","sku":"US/CA Outbound Voice","unit":"minute","rack_rate":0.0140,"contract_rate":0.0112,"locked":true,"source":"contract_exhibit_A" },
+    { "theme":"Voice & Calling","icon":"📞","category":"Voice","sku":"US/CA Toll-Free Inbound","unit":"minute","rack_rate":0.0220,"contract_rate":0.0154,"locked":true,"source":"contract_exhibit_A" },
+
+    { "theme":"Messaging (Sales & Marketing)","icon":"💬","category":"Messaging","sku":"Messaging SKU 1","unit":"segment","rack_rate":0.0079,"contract_rate":null,"locked":false,"source":"rack" },
+    { "theme":"Messaging (Sales & Marketing)","icon":"💬","category":"Messaging","sku":"Messaging SKU 2","unit":"segment","rack_rate":0.0075,"contract_rate":0.0051,"locked":false,"source":"contract_exhibit_B" },
+    { "theme":"Messaging (Sales & Marketing)","icon":"💬","category":"Messaging","sku":"Messaging SKU 3","unit":"message","rack_rate":0.0091,"contract_rate":null,"locked":false,"source":"rack" },
+    { "theme":"Messaging (Sales & Marketing)","icon":"💬","category":"Messaging","sku":"Messaging SKU 4","unit":"message","rack_rate":0.0065,"contract_rate":0.0046,"locked":true,"source":"contract_exhibit_B" },
+    { "theme":"Messaging (Sales & Marketing)","icon":"💬","category":"Messaging","sku":"Messaging SKU 5","unit":"message","rack_rate":0.0102,"contract_rate":null,"locked":false,"source":"rack" },
+    { "theme":"Messaging (Sales & Marketing)","icon":"💬","category":"Messaging","sku":"Messaging SKU 6","unit":"segment","rack_rate":0.0071,"contract_rate":null,"locked":false,"source":"rack" },
+    { "theme":"Messaging (Sales & Marketing)","icon":"💬","category":"Messaging","sku":"Messaging SKU 7","unit":"segment","rack_rate":0.0089,"contract_rate":0.0062,"locked":false,"source":"contract_exhibit_B" },
+    { "theme":"Messaging (Sales & Marketing)","icon":"💬","category":"RCS","sku":"RCS Text","unit":"message","rack_rate":0.0083,"contract_rate":null,"locked":false,"source":"rack" },
+    { "theme":"Messaging (Sales & Marketing)","icon":"💬","category":"RCS","sku":"RCS Rich Media","unit":"message","rack_rate":0.0220,"contract_rate":null,"locked":false,"source":"rack" },
+    { "theme":"Messaging (Sales & Marketing)","icon":"💬","category":"MMS","sku":"MMS Outbound (US LC)","unit":"message","rack_rate":0.0220,"contract_rate":null,"locked":false,"source":"rack" },
+
+    { "theme":"Messaging (Conversational)","icon":"🗨️","category":"Conversations","sku":"Conversations AMU","unit":"user","rack_rate":0.0500,"contract_rate":null,"locked":false,"source":"rack" },
+    { "theme":"Messaging (Conversational)","icon":"🗨️","category":"Conversations","sku":"Conversations SMS Integration","unit":"message","rack_rate":0.0083,"contract_rate":null,"locked":false,"source":"rack" },
+    { "theme":"Messaging (Conversational)","icon":"🗨️","category":"Conversations","sku":"Conversations Chat","unit":"message","rack_rate":0.0042,"contract_rate":null,"locked":false,"source":"rack" },
+    { "theme":"Messaging (Conversational)","icon":"🗨️","category":"Conversations","sku":"Conversations RCS","unit":"message","rack_rate":0.0085,"contract_rate":0.0060,"locked":false,"source":"contract_exhibit_B" },
+    { "theme":"Messaging (Conversational)","icon":"🗨️","category":"Conversations","sku":"Conversations Email","unit":"message","rack_rate":0.0010,"contract_rate":null,"locked":false,"source":"rack" },
+
+    { "theme":"Voice & Calling","icon":"📞","category":"Voice","sku":"Inbound Local (US)","unit":"minute","rack_rate":0.0085,"contract_rate":null,"locked":false,"source":"rack" },
+    { "theme":"Voice & Calling","icon":"📞","category":"SIP Trunking","sku":"Termination","unit":"minute","rack_rate":0.0045,"contract_rate":null,"locked":false,"source":"rack" },
+    { "theme":"Voice & Calling","icon":"📞","category":"SIP Trunking","sku":"Origination","unit":"minute","rack_rate":0.0034,"contract_rate":null,"locked":false,"source":"rack" },
+    { "theme":"Voice & Calling","icon":"📞","category":"Conference","sku":"Participant Minute (US)","unit":"minute","rack_rate":0.0018,"contract_rate":null,"locked":false,"source":"rack" },
+    { "theme":"Voice & Calling","icon":"📞","category":"Recording","sku":"Call Recording","unit":"minute","rack_rate":0.0025,"contract_rate":null,"locked":false,"source":"rack" },
+    { "theme":"Voice & Calling","icon":"📞","category":"Transcription","sku":"Voice Transcription","unit":"minute","rack_rate":0.0500,"contract_rate":0.0350,"locked":false,"source":"contract_exhibit_B" },
+
+    { "theme":"Identity & Security","icon":"🔒","category":"Verify","sku":"Verify Success (OTP/2FA)","unit":"success","rack_rate":0.0500,"contract_rate":null,"locked":false,"source":"rack" },
+    { "theme":"Identity & Security","icon":"🔒","category":"Lookup","sku":"CNAM","unit":"request","rack_rate":0.0100,"contract_rate":null,"locked":false,"source":"rack" },
+    { "theme":"Identity & Security","icon":"🔒","category":"Lookup","sku":"Identity Match","unit":"request","rack_rate":0.1000,"contract_rate":0.0700,"locked":false,"source":"contract_exhibit_B" },
+    { "theme":"Identity & Security","icon":"🔒","category":"Lookup","sku":"Reassigned Number Risk","unit":"request","rack_rate":0.0200,"contract_rate":null,"locked":false,"source":"rack" },
+    { "theme":"Identity & Security","icon":"🔒","category":"Lookup","sku":"Carrier & Line Type","unit":"request","rack_rate":0.0080,"contract_rate":null,"locked":false,"source":"rack" },
+
+    { "theme":"Compliance & Trust","icon":"✅","category":"10DLC","sku":"Brand Registration","unit":"one-time","rack_rate":46.0000,"contract_rate":null,"locked":false,"source":"rack" },
+    { "theme":"Compliance & Trust","icon":"✅","category":"10DLC","sku":"Campaign Registration","unit":"one-time","rack_rate":15.0000,"contract_rate":null,"locked":false,"source":"rack" },
+    { "theme":"Compliance & Trust","icon":"✅","category":"10DLC","sku":"Campaign Monthly (Standard)","unit":"campaign","rack_rate":10.0000,"contract_rate":null,"locked":false,"source":"rack" },
+    { "theme":"Compliance & Trust","icon":"✅","category":"Toolkit","sku":"Compliance Toolkit (per outbound msg)","unit":"message","rack_rate":0.0150,"contract_rate":null,"locked":false,"source":"rack" },
+
+    { "theme":"Phone Numbers & Infrastructure","icon":"🔢","category":"Numbers","sku":"Local Number (US)","unit":"month","rack_rate":1.1500,"contract_rate":null,"locked":false,"source":"rack" },
+    { "theme":"Phone Numbers & Infrastructure","icon":"🔢","category":"Numbers","sku":"Toll-Free (US/CA)","unit":"month","rack_rate":2.0000,"contract_rate":null,"locked":false,"source":"rack" },
+    { "theme":"Phone Numbers & Infrastructure","icon":"🔢","category":"E911","sku":"Emergency (per number)","unit":"month","rack_rate":1.0000,"contract_rate":null,"locked":false,"source":"rack" },
+    { "theme":"Phone Numbers & Infrastructure","icon":"🔢","category":"Porting","sku":"Port-In Fee","unit":"one-time","rack_rate":5.0000,"contract_rate":null,"locked":false,"source":"rack" },
+
+    { "theme":"Email (SendGrid)","icon":"✉️","category":"SendGrid","sku":"Email API (Essentials)","unit":"month","rack_rate":19.9500,"contract_rate":null,"locked":false,"source":"rack" },
+    { "theme":"Email (SendGrid)","icon":"✉️","category":"SendGrid","sku":"Marketing Campaigns (Basic)","unit":"month","rack_rate":15.0000,"contract_rate":null,"locked":false,"source":"rack" },
+
+    { "theme":"Contact Center (Flex)","icon":"🎧","category":"Flex","sku":"Named User","unit":"month","rack_rate":150.0000,"contract_rate":null,"locked":false,"source":"rack" },
+    { "theme":"Contact Center (Flex)","icon":"🎧","category":"Flex","sku":"Active User Hour","unit":"user","rack_rate":1.0000,"contract_rate":null,"locked":false,"source":"rack" },
+
+    { "theme":"Developer Tools & Automation","icon":"🛠️","category":"Studio","sku":"Flow Execution","unit":"exec","rack_rate":0.0010,"contract_rate":null,"locked":false,"source":"rack" },
+    { "theme":"Developer Tools & Automation","icon":"🛠️","category":"Functions","sku":"Invocation","unit":"exec","rack_rate":0.0001,"contract_rate":null,"locked":false,"source":"rack" },
+    { "theme":"Developer Tools & Automation","icon":"🛠️","category":"Sync","sku":"Endpoint Hours","unit":"hour","rack_rate":0.0025,"contract_rate":null,"locked":false,"source":"rack" },
+    { "theme":"Developer Tools & Automation","icon":"🛠️","category":"TaskRouter","sku":"Task","unit":"task","rack_rate":0.0600,"contract_rate":null,"locked":false,"source":"rack" },
+
+    { "theme":"Data & Customer Platform (Segment)","icon":"🧩","category":"Segment","sku":"Connections","unit":"month","rack_rate":120.0000,"contract_rate":null,"locked":false,"source":"rack" },
+    { "theme":"Data & Customer Platform (Segment)","icon":"🧩","category":"Segment","sku":"Protocols","unit":"month","rack_rate":350.0000,"contract_rate":null,"locked":false,"source":"rack" },
+
+    { "theme":"AI & Automation","icon":"🤖","category":"AI Assistant","sku":"Assistant Message","unit":"message","rack_rate":0.0200,"contract_rate":null,"locked":false,"source":"rack" },
+    { "theme":"AI & Automation","icon":"🤖","category":"Conversational Intelligence","sku":"Standard (per minute)","unit":"minute","rack_rate":0.0040,"contract_rate":null,"locked":false,"source":"rack" }
+  ]
+}

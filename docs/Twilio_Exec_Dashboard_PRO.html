@@ -1,0 +1,45 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Twilio — PRO Dashboard</title>
+<style>body{font:16px/1.6 Inter,system-ui,Segoe UI,Roboto,Arial;margin:0;padding:24px;color:#0b0f1d}
+h1{margin:0 0 12px} .row{display:flex;gap:12px;flex-wrap:wrap} .card{border:1px solid #e3e8ef;padding:12px;border-radius:10px}
+label{display:block;font-size:12px;color:#475569;margin:6px 0 2px} input{padding:8px;border:1px solid #cbd5e1;border-radius:8px}</style>
+</head><body>
+<h1>Twilio — PRO Dashboard</h1>
+<div class="row">
+  <div class="card"><label>Start date</label>
+    <label><input type="radio" name="start" value="sep1" checked> Sep 1</label>
+    <label><input type="radio" name="start" value="sep15"> Sep 15</label>
+  </div>
+  <div class="card"><label>Trailing-90 spend (USD)</label><input id="t90" type="number" value="0"></div>
+  <div class="card"><label>Ask ladder (%)</label>
+    <div class="row">
+      <div><label>Tier A</label><input id="askA" type="number" value="32"></div>
+      <div><label>Tier B</label><input id="askB" type="number" value="37"></div>
+      <div><label>Tier C</label><input id="askC" type="number" value="45"></div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="card">
+    <label>Leads/mo</label><input id="leads" type="number" value="1000000">
+    <label>Engagement %</label><input id="eng" type="number" value="19">
+    <label>Conversion %</label><input id="conv" type="number" value="1.0">
+    <label>Revenue / sale ($)</label><input id="rev" type="number" value="120">
+  </div>
+  <div class="card"><div id="kpis"></div></div>
+</div>
+<div class="card"><pre id="log">Loading catalog…</pre></div>
+<script>
+async function load(){const res=await fetch('./twilio_sku_catalog.json',{cache:'no-store'}); const data=await res.json(); window.CATALOG=data; recalc();}
+function tierDisc(t90){const A=+askA.value/100,B=+askB.value/100,C=+askC.value/100; if(t90>1_000_000) return C; if(t90>250_000) return B; return A;}
+function recalc(){
+  const t90=+document.getElementById('t90').value||0; const disc=tierDisc(t90);
+  const leads=+leads.value, eng=+eng.value/100, conv=+conv.value/100, rev=+rev.value;
+  const engaged=leads*eng, converted=leads*conv;
+  const msgs=leads*1.0; const rackRate=0.0083; const spend=rackRate*msgs*(1-disc);
+  const cpe= engaged? spend/engaged:0, cpc= converted? spend/converted:0, gm= rev-cpc;
+  kpis.innerHTML = `Tier: <b>${(disc*100).toFixed(0)}%</b> | CPE: <b>$${cpe.toFixed(2)}</b> | CPC: <b>$${cpc.toFixed(2)}</b> | GM/sale: <b>$${gm.toFixed(2)}</b>`;
+  log.textContent = `Catalog SKUs: ${CATALOG?.skus?.length||'—'}\nStart: ${document.querySelector('input[name="start"]:checked').value}\nTrailing-90: $${t90.toLocaleString()}`;
+}
+addEventListener('input', recalc); addEventListener('change', recalc); load();
+</script></body></html>
