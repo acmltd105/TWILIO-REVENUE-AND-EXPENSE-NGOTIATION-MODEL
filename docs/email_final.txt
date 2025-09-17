@@ -1,0 +1,17 @@
+Subject: Twilio negotiation portal — dashboards, amendment v2, and portfolio ladder
+
+Hi team,
+
+The Twilio negotiation workspace is live: <<INSERT_GITHUB_PAGES_URL>>
+
+Highlights:
+- PRO dashboard with start-date toggles, ladder (32→37→45%), and full SKU analytics.
+- SHINY dashboard for exec demos, reading directly from the shared catalog.
+- Seed catalog JSON (download-ready) with portfolio coverage across Messaging, Voice, Verify, Flex, Segment, and AI.
+- Amendment v2 reflecting the September 15 start, 75% credit, updated ladder, and two-year term.
+- Paste-ready assets for finance and legal follow-up.
+
+Let me know once you’ve reviewed; happy to walk through projections or expand the catalog to 120+ SKUs if helpful.
+
+Thanks,
+[Your Name]
