@@ -1,54 +1,63 @@
 # Final Email Draft to Twilio
 
-**Subject:** Locking in our transparent growth partnership
+**Subject:** Align start date, lift suspension, and accelerate growth with consistent portfolio pricing (2-year amendment)
 
-Hi [Twilio Partner Name],
+Hi M4,
 
-Thank you again for the collaboration and the candid guidance as we mapped out the revenue and expense levers together. I wanted to close the loop by putting the full proposal in one place so we can move to signature.
+We want to resolve this cleanly and set both sides up for scale. Below is one package that fixes enablement timing, clears suspension, and locks in consistent, portfolio-wide pricing—so the more we ramp, the more revenue you capture.
 
----
+## 1) Account & suspension — immediate relief
+- SID: AC721…d073 (same in contract and collections).
+- Outstanding (pre-enablement): $7,617.71 — July $2,993.50 + $1,927.50; August $2,696.71.
+**Ask:** Apply credits (see §3) and lift the suspension now; we’ll pay the remainder net-30.
 
-### 1. Summary of the amendment we are ready to sign
-- **Go-live:** September 15, 2025 (amends the July–August ramp).
-- **Ladder:** Maintain the 100-SKU catalog while rebalancing to the 32% / 37% / 45% tiers (32% baseline, 37% up to $250k trailing-90, 45% beyond $1M trailing-90).
-- **Consistency:** Keeps the pre-agreed Exhibit A consistency portfolio across the rack so that the weighted average still lands at ~32%.
-- **Cost-per-engagement guardrails:** Inputs = leads, words per message, Verify attempts (%), message volume mix, revenue per sale. Outputs = $0.28–$0.52 CPE, $28–$50 CPC depending on funnel conversion, with gross margin per sale tracked against $120+ revenue per conversion.
-- **Predictability:** 24-month term, aligning to Twilio’s preference for predictable revenue and our clients’ migration schedule.
+## 2) Timeline — fairness on start/minimums
+- Jul 1, 2025 → contract effective (paper)
+- Aug 12, 2025 → billing enablement
+- Sep 2, 2025 → NET-30 granted
+- Sep 15, 2025 → first operational ramp
+**Ask:** Amend Order Form Start Date / Minimum-Spend commencement to Sep 15, 2025.
 
-### 2. Transparency + shared instrumentation
-- **Dashboard:** GitHub Pages site (`index_brand.html`) with contract-vs-rack variance, CPI/CPA/CAC tornado sensitivity, usage by SKU (100 total, with “green” lock markers), and live trailing-90 projections. URL is ready—just let us know the preferred auth scope.
-- **Excel (“one-truth”):** `twilio_sku_catalog.xlsx` mirrors the dashboard and includes the Fulfillment, Ladder, Inputs, and Projections tabs. This is the workbook we will treat as the system of record.
-- **Reporting cadence:** Weekly async snapshot + monthly working session. Variance to target will always be annotated with root cause + corrective action.
+## 3) Pre-enablement credits — zero-usage window
+- Total July–Aug: $7,617.71
+- Credit ask: 75% = $5,713.28; net due $1,904.43 (we’ll pay net-30 post-lift).
 
-### 3. Why this is a win-win
-- **Fair:** No minimums before enablement and credits for voice innovations remain intact.
-- **Consistent:** The ladder keeps the 32% average across the board, honoring the economics we already agreed in Exhibit A.
-- **Growth-aligned:** Deeper discounts unlock adoption across the portfolio, pushing us past the $13.9M annualized spend target.
-- **Predictable:** The two-year term levels out procurement and cash planning for both teams.
-- **Transparent:** Live dashboard + Excel ensures shared truth on usage, cost, and ROI.
+## 4) Spend to date — receipts
+- YTD 2025 (Jan–Aug): $146,520.91 with MoM detail available from our statements.
 
-### 4. Next steps (we can execute immediately)
-1. **Deploy GitHub Pages bundle** – `/docs` is zipped and ready; once we receive the target GitHub org/project we will push and share the URL.
-2. **Confirm Settings → Pages → Source = main /docs** – keeps the dashboard public behind the right controls.
-3. **Attach Excel** – `twilio_sku_catalog.xlsx` accompanies this email for reference.
-4. **Countersign** – we are ready to execute upon receipt of the Twilio signature packet.
+## 5) Portfolio discount ladder — consistency (not a favor)
+Exhibit A already averages ~32% vs rack (SMS Std $0.0047 vs $0.0083; SMS TF $0.0055 vs $0.0083; Voice Outbound $0.0112 vs $0.014; TF Inbound $0.0154 vs $0.022).
 
-Let me know if you’d like to walk through the dashboard together or if Procurement needs any additional documentation. Otherwise, we are aligned and ready for signature this week.
+**Ask:** Apply that consistency across ~100 SKUs (Messaging, Voice, Verify, AI, Numbers, Lookup, Conversations, Flex, Studio/Functions, Segment, SIP).
 
-Appreciate the partnership.
+**Ladder:** Tier A 32% → Tier B 37% (> $250k trailing-90) → Tier C 45% (> $1M trailing-90).
+
+**Why Twilio wins:** At Tier C our 24-month cumulative spend ≥ $13.9M. Deeper discounts → bigger adoption → higher absolute Twilio revenue.
+
+## 6) Two-year term
+We’ll commit to a 2-year amendment—predictable revenue for Twilio, stable pricing for us.
+
+## 7) Cost-per-Client (lead economics)
+Inputs: leads/month, words/message (→ segments), Verify attempts %, conversion %, voice minutes, revenue/sale.
+
+Outputs (current funnel): CPE ≈ $0.28, CPC ≈ $28–$50, gross margin per sale vs $120+ revenue.
+
+Binds pricing to customer-level ROI—transparent and scalable.
+
+## 8) Transparency — live model & workbook
+- Interactive dashboard (public link):
+  - 👉 https://acmltd105.github.io/twilio-portal/ (PRO and SHINY dashboards linked from the landing)
+- Excel “one truth” mirrors the dashboard (Rates_Full, Ladder, Inputs, 24M projection).
+
+We’re happy to attach the workbook and walk through it live.
+
+## Summary ask (one clean amendment)
+- Amend start/minimums → Sep 15, 2025.
+- Apply 75% credit to July–Aug; pay remainder net-30.
+- Adopt portfolio ladder (32 → 37 → 45%) across ~100 SKUs.
+- Sign a 2-year term.
+- Accept dashboard + Excel as the transparent baseline.
 
 Best,
 
-Alan Ives  
-Founder & CEO, [Company Name]
-
----
-
-**Attachments:**
-- Dashboard bundle (`/docs`)
-- Excel: `twilio_sku_catalog.xlsx`
-
-**Links:**
-- Dashboard: `<GitHub Pages URL>`
-- `index_brand.html`
-
+ALAN IVES!
