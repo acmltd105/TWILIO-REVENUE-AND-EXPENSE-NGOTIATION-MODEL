@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Twilio Executive Dashboard · PRO</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --primary: #5a9bff;
+      --accent: #f05a7e;
+      --bg: #05070d;
+      --glass: rgba(255, 255, 255, 0.06);
+      --border: rgba(255, 255, 255, 0.18);
+      --text: #f7f9ff;
+      font-family: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(120% 120% at 10% 0%, rgba(240, 90, 126, 0.18), transparent 55%),
+                  radial-gradient(120% 120% at 90% 0%, rgba(90, 155, 255, 0.2), transparent 55%),
+                  linear-gradient(180deg, #05070d, #0f1320 55%, #05070d 100%);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      padding: 32px clamp(16px, 4vw, 56px) 48px;
+    }
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+    }
+    header h1 {
+      margin: 0;
+      font-size: clamp(2.2rem, 3.6vw, 3.4rem);
+      letter-spacing: -0.04em;
+    }
+    header p {
+      margin: 0;
+      color: rgba(247, 249, 255, 0.74);
+      max-width: 520px;
+    }
+    .badge {
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(90, 155, 255, 0.25), rgba(240, 90, 126, 0.25));
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+    }
+    .layout {
+      margin-top: 36px;
+      display: grid;
+      gap: 28px;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+    .panel {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 24px;
+      backdrop-filter: blur(24px) saturate(170%);
+      position: relative;
+      overflow: hidden;
+    }
+    .panel::after {
+      content: "";
+      position: absolute;
+      inset: -30% -10% auto;
+      height: 65%;
+      background: radial-gradient(circle at top left, rgba(90, 155, 255, 0.18), transparent 65%);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+    .panel h2 {
+      margin-top: 0;
+      font-size: 1.4rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .panel p {
+      color: rgba(247, 249, 255, 0.75);
+      line-height: 1.6;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    input[type="number"] {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(4, 8, 16, 0.55);
+      color: var(--text);
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+    input[type="number"]:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(90, 155, 255, 0.25);
+    }
+    .input-grid {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-top: 18px;
+    }
+    .kpi {
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(5, 12, 24, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .kpi .label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(247, 249, 255, 0.62);
+    }
+    .kpi .value {
+      margin-top: 8px;
+      font-size: 1.35rem;
+      font-weight: 600;
+    }
+    .ladder {
+      margin-top: 24px;
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 0.95rem;
+    }
+    .ladder th, .ladder td {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: left;
+    }
+    .ladder tr.active {
+      background: rgba(90, 155, 255, 0.12);
+    }
+    .notes {
+      margin-top: 32px;
+      display: grid;
+      gap: 12px;
+      color: rgba(247, 249, 255, 0.72);
+    }
+    .notes strong {
+      color: var(--text);
+    }
+    .catalog {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .sku-card {
+      padding: 16px;
+      border-radius: 16px;
+      background: rgba(5, 10, 18, 0.55);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      font-size: 0.9rem;
+    }
+    footer {
+      margin-top: 48px;
+      text-align: center;
+      color: rgba(247, 249, 255, 0.55);
+      font-size: 0.85rem;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(240, 90, 126, 0.18);
+      border: 1px solid rgba(240, 90, 126, 0.32);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <div class="badge">M4 NEGOTIATION · LIVE</div>
+      <h1>Portfolio Revenue Ladder – PRO</h1>
+      <p>
+        Input the latest funnel assumptions, align on cost per engagement, and toggle the trailing-90 revenue to
+        preview the automatic tier uplift. All calculations run client-side and sync with the shared SKU catalog.
+      </p>
+    </div>
+    <a class="pill" href="index.html">← Back to landing</a>
+  </header>
+
+  <div class="layout">
+    <section class="panel" aria-labelledby="inputs">
+      <h2 id="inputs">Scenario inputs</h2>
+      <p>Refresh these numbers live during executive reviews. Every edit recalculates the KPIs in real time.</p>
+      <div class="input-grid">
+        <label>Leads / month
+          <input id="input-leads" type="number" min="0" step="1" value="420" />
+        </label>
+        <label>Engagement rate (%)
+          <input id="input-engagement" type="number" min="0" max="100" step="0.1" value="48" />
+        </label>
+        <label>Conversion rate (%)
+          <input id="input-conversion" type="number" min="0" max="100" step="0.1" value="18" />
+        </label>
+        <label>Revenue / sale (USD)
+          <input id="input-revenue" type="number" min="0" step="10" value="38000" />
+        </label>
+        <label>Trailing-90 revenue (USD)
+          <input id="input-trailing" type="number" min="0" step="1000" value="240000" />
+        </label>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="outputs">
+      <h2 id="outputs">KPI snapshot</h2>
+      <p>These KPIs align with the narrative in the board memo. Twilio share reflects the ladder tier derived from the trailing-90 total.</p>
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="label">Engaged contacts</div>
+          <div class="value" id="kpi-engaged">0</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Conversions / month</div>
+          <div class="value" id="kpi-conversions">0</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Total booked revenue</div>
+          <div class="value" id="kpi-revenue">$0</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Twilio share</div>
+          <div class="value" id="kpi-share">$0</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Partner gross margin</div>
+          <div class="value" id="kpi-gm">$0</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="panel" aria-labelledby="economics">
+    <h2 id="economics">Unit economics</h2>
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="label">Cost per engagement</div>
+        <div class="value" id="kpi-cpe">$0</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Cost per conversion</div>
+        <div class="value" id="kpi-cpc">$0</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Gross margin / sale</div>
+        <div class="value" id="kpi-gm-sale">$0</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Active tier</div>
+        <div class="value" id="kpi-tier">Tier A</div>
+      </div>
+    </div>
+    <table class="ladder" aria-describedby="ladder-caption">
+      <caption id="ladder-caption" style="caption-side: bottom; color: rgba(247,249,255,0.65); padding-top: 12px;">
+        Tier thresholds are evaluated against the trailing-90 revenue figure.
+      </caption>
+      <thead>
+        <tr>
+          <th scope="col">Tier</th>
+          <th scope="col">Threshold (USD)</th>
+          <th scope="col">Twilio portfolio share</th>
+          <th scope="col">Narrative</th>
+        </tr>
+      </thead>
+      <tbody id="ladder-body"></tbody>
+    </table>
+  </section>
+
+  <section class="panel" aria-labelledby="catalog-section">
+    <h2 id="catalog-section">SKU drilldown</h2>
+    <p>The catalog is shared with the landing page. Filter by category to highlight talking points.</p>
+    <div class="input-grid" style="margin-bottom: 16px;">
+      <label>Filter by category
+        <input id="catalog-filter" type="text" placeholder="e.g. Messaging" />
+      </label>
+      <label>Minimum ladder tier
+        <input id="catalog-tier" type="text" placeholder="A" maxlength="1" />
+      </label>
+    </div>
+    <div id="catalog" class="catalog" role="list"></div>
+  </section>
+
+  <section class="panel" aria-labelledby="talk-track">
+    <h2 id="talk-track">Talk track</h2>
+    <div class="notes">
+      <p><strong>Cost per client walkthrough:</strong> Start with current leads per month, layer the actual engagement and conversion rates, then highlight how the trailing-90 jump unlocks the 37% and 45% portfolio share.</p>
+      <p><strong>Credit alignment:</strong> 75% pre-enablement credit is pre-loaded in the amendment. Reference the <a href="contracts/amendment_v2.md">markdown download</a> if legal asks for line-level wording.</p>
+      <p><strong>Automation:</strong> Run <code>python3 invoice_rollup.py</code> after each invoice drop. The Slack notifier surfaces the new tier at 13:00 UTC daily.</p>
+    </div>
+  </section>
+
+  <footer>
+    Built for executives — shareable URL ready for GitHub Pages. Questions? Ping the partnership desk.
+  </footer>
+
+  <script>
+    const ladder = [
+      { tier: "A", threshold: 0, share: 0.32, narrative: "Entry tier with immediate runway to 37%." },
+      { tier: "B", threshold: 250000, share: 0.37, narrative: "Trailing-90 clears $250K — accelerator engaged." },
+      { tier: "C", threshold: 1000000, share: 0.45, narrative: "Flagship alignment — enterprise envelope unlocked." }
+    ];
+
+    const catalogContainer = document.getElementById("catalog");
+    const filterInput = document.getElementById("catalog-filter");
+    const tierInput = document.getElementById("catalog-tier");
+
+    function formatCurrency(value) {
+      return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(value);
+    }
+
+    function computeTier(trailing) {
+      let selected = ladder[0];
+      for (const step of ladder) {
+        if (trailing >= step.threshold) {
+          selected = step;
+        }
+      }
+      return selected;
+    }
+
+    function updateLadderHighlight(activeTier) {
+      const tbody = document.getElementById("ladder-body");
+      tbody.innerHTML = "";
+      ladder.forEach((step) => {
+        const row = document.createElement("tr");
+        if (step.tier === activeTier.tier) {
+          row.classList.add("active");
+        }
+        row.innerHTML = `
+          <th scope="row">${step.tier}</th>
+          <td>${formatCurrency(step.threshold)}</td>
+          <td>${(step.share * 100).toFixed(0)}%</td>
+          <td>${step.narrative}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function computeKpis() {
+      const leads = Number(document.getElementById("input-leads").value) || 0;
+      const engagementRate = Math.min(Math.max(Number(document.getElementById("input-engagement").value) || 0, 0), 100);
+      const conversionRate = Math.min(Math.max(Number(document.getElementById("input-conversion").value) || 0, 0), 100);
+      const revenuePerSale = Number(document.getElementById("input-revenue").value) || 0;
+      const trailing = Number(document.getElementById("input-trailing").value) || 0;
+
+      const engaged = leads * (engagementRate / 100);
+      const conversions = engaged * (conversionRate / 100);
+      const totalRevenue = conversions * revenuePerSale;
+
+      const activeTier = computeTier(trailing);
+      const twilioShare = totalRevenue * activeTier.share;
+      const partnerGross = totalRevenue - twilioShare;
+
+      const costPerEngagement = engaged ? twilioShare / engaged : 0;
+      const costPerConversion = conversions ? twilioShare / conversions : 0;
+      const grossMarginPerSale = conversions ? partnerGross / conversions : revenuePerSale * (1 - activeTier.share);
+
+      document.getElementById("kpi-engaged").textContent = Math.round(engaged).toLocaleString();
+      document.getElementById("kpi-conversions").textContent = Math.round(conversions).toLocaleString();
+      document.getElementById("kpi-revenue").textContent = formatCurrency(totalRevenue);
+      document.getElementById("kpi-share").textContent = formatCurrency(twilioShare);
+      document.getElementById("kpi-gm").textContent = formatCurrency(partnerGross);
+      document.getElementById("kpi-cpe").textContent = formatCurrency(costPerEngagement);
+      document.getElementById("kpi-cpc").textContent = formatCurrency(costPerConversion);
+      document.getElementById("kpi-gm-sale").textContent = formatCurrency(grossMarginPerSale);
+      document.getElementById("kpi-tier").textContent = `Tier ${activeTier.tier}`;
+
+      updateLadderHighlight(activeTier);
+    }
+
+    ["input-leads", "input-engagement", "input-conversion", "input-revenue", "input-trailing"].forEach((id) => {
+      document.getElementById(id).addEventListener("input", computeKpis);
+    });
+
+    async function loadCatalog() {
+      try {
+        const response = await fetch("twilio_sku_catalog.json", { cache: "no-store" });
+        if (!response.ok) throw new Error(`Request failed: ${response.status}`);
+        const data = await response.json();
+        renderCatalog(data.skus);
+      } catch (error) {
+        const fallback = document.createElement("p");
+        fallback.style.color = "#ff9ba6";
+        fallback.textContent = `Unable to load SKU catalog: ${error.message}`;
+        catalogContainer.replaceWith(fallback);
+        console.error("Failed to load catalog", error);
+      }
+    }
+
+    function renderCatalog(skus) {
+      catalogContainer.innerHTML = "";
+      const categoryFilter = filterInput.value.trim().toLowerCase();
+      const tierFloor = tierInput.value.trim().toUpperCase();
+
+      const filtered = skus.filter((sku) => {
+        const matchesCategory = !categoryFilter || sku.category.toLowerCase().includes(categoryFilter);
+        const meetsTier = !tierFloor || sku.ladder.some((step) => step.tier >= tierFloor);
+        return matchesCategory && meetsTier;
+      });
+
+      filtered.forEach((sku) => {
+        const card = document.createElement("article");
+        card.className = "sku-card";
+        card.innerHTML = `
+          <strong>${sku.name}</strong><br />
+          <span>${sku.id} · ${sku.category}</span><br />
+          <span>List: $${sku.list_price_usd.toFixed(4)} ${sku.unit}</span><br />
+          <span>Usage: ${sku.notes}</span>
+        `;
+        catalogContainer.appendChild(card);
+      });
+
+      if (!filtered.length) {
+        const empty = document.createElement("p");
+        empty.textContent = "No SKUs match the current filters.";
+        empty.style.color = "#ff9ba6";
+        catalogContainer.appendChild(empty);
+      }
+    }
+
+    filterInput.addEventListener("input", () => loadCatalog());
+    tierInput.addEventListener("input", () => loadCatalog());
+
+    computeKpis();
+    loadCatalog();
+  </script>
+</body>
+</html>
