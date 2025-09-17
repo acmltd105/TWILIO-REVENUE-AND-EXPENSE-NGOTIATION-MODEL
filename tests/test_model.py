@@ -7,6 +7,7 @@ from twilio_revenue_and_expense_ngotiation_model import (
     calculate_negotiation_envelope,
     determine_margin_envelope,
 )
+from twilio_revenue_and_expense_ngotiation_model.model import _to_decimal_money
 
 
 def test_calculate_envelope_with_stream_breakdown():
@@ -81,3 +82,45 @@ def test_calculate_envelope_dataclass_return():
     assert envelope.floor_margin == Decimal("0.3300")
     assert envelope.ceiling_margin == Decimal("0.3700")
     assert envelope.target_revenue == Decimal("953.85")
+
+
+def test_calculate_envelope_handles_currency_strings():
+    envelope = calculate_negotiation_envelope(
+        [
+            {
+                "name": "sms",
+                "total": "$1,234.50",
+                "list_total": "USD 1,500.00",
+                "currency": "USD",
+            }
+        ],
+        [
+            {
+                "name": "sms_cost",
+                "total": "USD 480.25",
+                "currency": "USD",
+            }
+        ],
+        target_margin="55%",
+        floor_margin="50%",
+        ceiling_margin="60%",
+    )
+
+    assert envelope["revenue"] == pytest.approx(1234.50)
+    assert envelope["expense"] == pytest.approx(480.25)
+    assert envelope["target_revenue"] == pytest.approx(1067.22, abs=0.01)
+    assert envelope["floor_revenue"] == pytest.approx(960.50)
+    assert envelope["ceiling_revenue"] == pytest.approx(1200.62)
+    assert envelope["target_discount"] == pytest.approx(0.2885, abs=1e-4)
+    assert envelope["floor_discount"] == pytest.approx(0.3597, abs=1e-4)
+    assert envelope["ceiling_discount"] == pytest.approx(0.1996, abs=1e-4)
+
+
+def test_to_decimal_money_parses_currency_symbols():
+    assert _to_decimal_money("$1,234.50", "USD") == Decimal("1234.50")
+    assert _to_decimal_money("1,234.50-", "USD") == Decimal("-1234.50")
+    assert _to_decimal_money("(USD 1,234.50)", "USD") == Decimal("-1234.50")
+    assert _to_decimal_money("A$1,234.50", "AUD") == Decimal("1234.50")
+
+    with pytest.raises(ValueError):
+        _to_decimal_money("not a number", "USD")
