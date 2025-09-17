@@ -1,0 +1,21 @@
+Subject: Align start date, lift suspension, and accelerate growth with consistent portfolio pricing (2-year amendment)
+
+Hi <EXEC NAME>,
+
+We’re ready to move decisively. One clean package: start date to Sep 15, 75% pre-enablement credit, 32→37→45% portfolio ladder, 2-year term, and a live dashboard + Excel that maps to your revenue story. Link below.
+
+Highlights:
+1. **Start date + suspension:** We align the effective date to 15 September, lift the suspension immediately, and assign the architect/CSM duo within five business days.
+2. **Portfolio ladder:** Trailing-90 automation governs the move from 32% → 37% → 45% on the full cross-channel portfolio. The dashboard shows the tier math live and the daily Slack ping keeps the team honest.
+3. **Enablement credit:** 75% of the first-quarter portfolio commitment is issued as a pre-enablement credit, visible on the first invoice.
+4. **SKU transparency:** Messaging, Verify + Conversations, Flex, Segment, Email, and AI Assist are all catalogued with their list assumptions so finance and ops can inspect the path to M4 revenue.
+
+Action items:
+- Review the amendment (markdown download is on the landing page for quick legal markup).
+- Run your latest leads/engagement/conversion inputs in the PRO dashboard to see cost-per-engagement and the ladder jump.
+- Reply-all with approval or redlines, or drop your questions in the Slack thread and we can resolve same-day.
+
+Dashboard & resources: <YOUR PAGES URL>
+
+Thanks,
+<YOUR NAME>

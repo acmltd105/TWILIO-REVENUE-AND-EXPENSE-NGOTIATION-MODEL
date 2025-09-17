@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Twilio Revenue &amp; Expense Negotiation Model</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #0d1117;
+      --fg: #f5f7ff;
+      --accent: #f05a7e;
+      --accent-soft: rgba(240, 90, 126, 0.12);
+      --card-bg: rgba(255, 255, 255, 0.06);
+      --card-border: rgba(255, 255, 255, 0.15);
+      font-family: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at 20% 20%, rgba(240, 90, 126, 0.08), transparent 55%),
+                  radial-gradient(circle at 80% 10%, rgba(69, 179, 255, 0.12), transparent 60%),
+                  linear-gradient(160deg, #07090f, #141821 60%, #07090f);
+      color: var(--fg);
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      padding: 56px 32px 40px;
+      text-align: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: clamp(2.75rem, 4vw, 4.25rem);
+      letter-spacing: -0.04em;
+    }
+    header p {
+      margin: 18px auto 0;
+      max-width: 720px;
+      font-size: 1.125rem;
+      color: rgba(245, 247, 255, 0.76);
+    }
+    main {
+      flex: 1;
+      display: grid;
+      gap: 32px;
+      padding: 0 32px 64px;
+    }
+    .hero-actions {
+      margin-top: 32px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    a.btn {
+      padding: 14px 28px;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 600;
+      text-decoration: none;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 12px 32px rgba(240, 90, 126, 0.25);
+    }
+    a.btn.secondary {
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      box-shadow: none;
+    }
+    a.btn:hover {
+      transform: translateY(-2px) scale(1.01);
+      box-shadow: 0 16px 38px rgba(240, 90, 126, 0.33);
+    }
+    section {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 32px;
+      backdrop-filter: blur(22px) saturate(160%);
+    }
+    section h2 {
+      margin-top: 0;
+      font-size: 1.75rem;
+      letter-spacing: -0.02em;
+    }
+    section p {
+      color: rgba(245, 247, 255, 0.72);
+      line-height: 1.6;
+    }
+    .cards {
+      display: grid;
+      gap: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+    .card {
+      padding: 24px;
+      border-radius: 20px;
+      background: rgba(8, 12, 20, 0.55);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 0 0, rgba(240, 90, 126, 0.16), transparent 55%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+    .card:hover::after {
+      opacity: 1;
+    }
+    .card h3 {
+      margin-top: 0;
+      font-size: 1.25rem;
+    }
+    .card p {
+      color: rgba(245, 247, 255, 0.74);
+      margin-bottom: 16px;
+    }
+    .card a {
+      color: #9acbff;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .catalog-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-top: 24px;
+    }
+    .sku {
+      padding: 18px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .sku h4 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+    .sku p {
+      margin: 4px 0;
+      color: rgba(245, 247, 255, 0.7);
+      font-size: 0.9rem;
+    }
+    footer {
+      padding: 24px;
+      text-align: center;
+      color: rgba(245, 247, 255, 0.65);
+      font-size: 0.85rem;
+    }
+    @media (max-width: 640px) {
+      header, main {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+      section {
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Twilio Executive Revenue Command Center</h1>
+    <p>
+      A polished package for boardroom-ready negotiations: interactive dashboards,
+      revenue automation, legal redlines, and communication collateral—curated for M4 alignment
+      and zero surprises when you go live with the field.
+    </p>
+    <div class="hero-actions">
+      <a class="btn" href="Twilio_Exec_Dashboard_PRO.html">Launch PRO Dashboard</a>
+      <a class="btn secondary" href="Twilio_Exec_Dashboard_SHINY.html">Open SHINY View</a>
+    </div>
+  </header>
+  <main>
+    <section aria-labelledby="dashboards">
+      <h2 id="dashboards">Dashboards</h2>
+      <p>
+        Two high-fidelity dashboards model the M4 expansion path. PRO is tuned for live negotiations with
+        dynamic scenario inputs, while SHINY distills the same data for executive read-outs.
+      </p>
+      <div class="cards">
+        <div class="card">
+          <h3>PRO (Negotiation cockpit)</h3>
+          <p>
+            Guided inputs for cost-per-engagement storytelling, live ladder tracking, and SKU drilldowns from the catalog.
+          </p>
+          <a href="Twilio_Exec_Dashboard_PRO.html">Go to PRO →</a>
+        </div>
+        <div class="card">
+          <h3>SHINY (Executive snapshot)</h3>
+          <p>
+            Optimized for tablets and quick readouts. Auto-syncs the same trailing-90 ladder logic with a condensed KPI grid.
+          </p>
+          <a href="Twilio_Exec_Dashboard_SHINY.html">Go to SHINY →</a>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="supporting-docs">
+      <h2 id="supporting-docs">Supporting documents</h2>
+      <div class="cards">
+        <div class="card">
+          <h3>Amendment v2</h3>
+          <p>Boardroom-ready markdown download including revised term, portfolio ladder, and credit treatment.</p>
+          <a href="contracts/amendment_v2.md" download>Download amendment →</a>
+        </div>
+        <div class="card">
+          <h3>Final email</h3>
+          <p>Paste-ready narrative with space to drop your live GitHub Pages URL for immediate executive review.</p>
+          <a href="email_final.txt" download>Download email body →</a>
+        </div>
+        <div class="card">
+          <h3>Playbook</h3>
+          <p>Usage notes, pre-flight checks, and testing protocol for demos or distribution.</p>
+          <a href="README.md" download>View README →</a>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="automation">
+      <h2 id="automation">Automation + tooling</h2>
+      <p>
+        Drop invoice CSVs into <code>/invoices/csv</code> and run <code>python3 invoice_rollup.py</code> to refresh
+        the trailing-90 total. Pair it with the Slack notifier workflow to keep stakeholders aligned every morning.
+      </p>
+      <div class="cards">
+        <div class="card">
+          <h3>Trailing-90 rollup</h3>
+          <p>Python utility produces <code>invoices/trailing_90_usd.txt</code> with the rolling sum and prints the value.</p>
+          <a href="../invoice_rollup.py">View script →</a>
+        </div>
+        <div class="card">
+          <h3>GitHub Actions</h3>
+          <p>Continuous deployment for GitHub Pages plus Slack tier notifications (enable by adding the webhook secret).</p>
+          <a href="../.github/workflows/pages.yml">View workflows →</a>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="catalog">
+      <h2 id="catalog">Catalog preview</h2>
+      <p>
+        The live dashboard hydrates directly from the SKU catalog to keep pricing aligned with M4 assumptions.
+        Key SKUs are surfaced here for quick reference; open the dashboard for the full list and calculations.
+      </p>
+      <div id="catalog-list" class="catalog-list" role="list"></div>
+    </section>
+  </main>
+  <footer>
+    Built for the M4 negotiation package • Twilio partnership desk • Updated automatically on every push to <code>main</code>
+  </footer>
+  <script>
+    async function loadCatalog() {
+      const container = document.getElementById("catalog-list");
+      try {
+        const response = await fetch("twilio_sku_catalog.json", { cache: "no-store" });
+        if (!response.ok) throw new Error(`Request failed: ${response.status}`);
+        const catalog = await response.json();
+        const featured = catalog.skus.slice(0, 6);
+        featured.forEach((sku) => {
+          const article = document.createElement("article");
+          article.className = "sku";
+          article.innerHTML = `
+            <h4>${sku.name}</h4>
+            <p><strong>SKU:</strong> ${sku.id}</p>
+            <p><strong>Category:</strong> ${sku.category}</p>
+            <p><strong>List:</strong> $${sku.list_price_usd.toFixed(4)} ${sku.unit}</p>
+            <p><strong>Tier Ladder:</strong> ${sku.ladder.map(l => `${l.tier}→${(l.share * 100).toFixed(0)}%`).join(" · ")}</p>
+          `;
+          container.appendChild(article);
+        });
+      } catch (error) {
+        const message = document.createElement("p");
+        message.style.color = "#ff9ba6";
+        message.textContent = `Unable to load SKU catalog: ${error.message}`;
+        document.getElementById("catalog-list").replaceWith(message);
+        console.error("Catalog load failed", error);
+      }
+    }
+    loadCatalog();
+  </script>
+</body>
+</html>
