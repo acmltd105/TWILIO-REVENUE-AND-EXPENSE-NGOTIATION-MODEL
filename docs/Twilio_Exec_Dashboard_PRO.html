@@ -1,500 +1,426 @@
-codex/add-files-for-github-pages-setup
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Twilio — PRO Dashboard</title>
-<style>body{font:16px/1.6 Inter,system-ui,Segoe UI,Roboto,Arial;margin:0;padding:24px;color:#0b0f1d}
-h1{margin:0 0 12px} .row{display:flex;gap:12px;flex-wrap:wrap} .card{border:1px solid #e3e8ef;padding:12px;border-radius:10px}
-label{display:block;font-size:12px;color:#475569;margin:6px 0 2px} input{padding:8px;border:1px solid #cbd5e1;border-radius:8px}</style>
-</head><body>
-<h1>Twilio — PRO Dashboard</h1>
-<div class="row">
-  <div class="card"><label>Start date</label>
-    <label><input type="radio" name="start" value="sep1" checked> Sep 1</label>
-    <label><input type="radio" name="start" value="sep15"> Sep 15</label>
-  </div>
-  <div class="card"><label>Trailing-90 spend (USD)</label><input id="t90" type="number" value="0"></div>
-  <div class="card"><label>Ask ladder (%)</label>
-    <div class="row">
-      <div><label>Tier A</label><input id="askA" type="number" value="32"></div>
-      <div><label>Tier B</label><input id="askB" type="number" value="37"></div>
-      <div><label>Tier C</label><input id="askC" type="number" value="45"></div>
-    </div>
-  </div>
-</div>
-<div class="row">
-  <div class="card">
-    <label>Leads/mo</label><input id="leads" type="number" value="1000000">
-    <label>Engagement %</label><input id="eng" type="number" value="19">
-    <label>Conversion %</label><input id="conv" type="number" value="1.0">
-    <label>Revenue / sale ($)</label><input id="rev" type="number" value="120">
-  </div>
-  <div class="card"><div id="kpis"></div></div>
-</div>
-<div class="card"><pre id="log">Loading catalog…</pre></div>
-<script>
-async function load(){const res=await fetch('./twilio_sku_catalog.json',{cache:'no-store'}); const data=await res.json(); window.CATALOG=data; recalc();}
-function tierDisc(t90){const A=+askA.value/100,B=+askB.value/100,C=+askC.value/100; if(t90>1_000_000) return C; if(t90>250_000) return B; return A;}
-function recalc(){
-  const t90=+document.getElementById('t90').value||0; const disc=tierDisc(t90);
-  const leads=+leads.value, eng=+eng.value/100, conv=+conv.value/100, rev=+rev.value;
-  const engaged=leads*eng, converted=leads*conv;
-  const msgs=leads*1.0; const rackRate=0.0083; const spend=rackRate*msgs*(1-disc);
-  const cpe= engaged? spend/engaged:0, cpc= converted? spend/converted:0, gm= rev-cpc;
-  kpis.innerHTML = `Tier: <b>${(disc*100).toFixed(0)}%</b> | CPE: <b>$${cpe.toFixed(2)}</b> | CPC: <b>$${cpc.toFixed(2)}</b> | GM/sale: <b>$${gm.toFixed(2)}</b>`;
-  log.textContent = `Catalog SKUs: ${CATALOG?.skus?.length||'—'}\nStart: ${document.querySelector('input[name="start"]:checked').value}\nTrailing-90: $${t90.toLocaleString()}`;
-}
-addEventListener('input', recalc); addEventListener('change', recalc); load();
-</script></body></html>
-=======
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Twilio Executive Dashboard · PRO</title>
-  <style>
-    :root {
-      color-scheme: light dark;
-      --primary: #5a9bff;
-      --accent: #f05a7e;
-      --bg: #05070d;
-      --glass: rgba(255, 255, 255, 0.06);
-      --border: rgba(255, 255, 255, 0.18);
-      --text: #f7f9ff;
-      font-family: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: radial-gradient(120% 120% at 10% 0%, rgba(240, 90, 126, 0.18), transparent 55%),
-                  radial-gradient(120% 120% at 90% 0%, rgba(90, 155, 255, 0.2), transparent 55%),
-                  linear-gradient(180deg, #05070d, #0f1320 55%, #05070d 100%);
-      color: var(--text);
-      display: flex;
-      flex-direction: column;
-      padding: 32px clamp(16px, 4vw, 56px) 48px;
-    }
-    header {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 24px;
-    }
-    header h1 {
-      margin: 0;
-      font-size: clamp(2.2rem, 3.6vw, 3.4rem);
-      letter-spacing: -0.04em;
-    }
-    header p {
-      margin: 0;
-      color: rgba(247, 249, 255, 0.74);
-      max-width: 520px;
-    }
-    .badge {
-      padding: 10px 18px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, rgba(90, 155, 255, 0.25), rgba(240, 90, 126, 0.25));
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-size: 0.8rem;
-    }
-    .layout {
-      margin-top: 36px;
-      display: grid;
-      gap: 28px;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    }
-    .panel {
-      background: var(--glass);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 24px;
-      backdrop-filter: blur(24px) saturate(170%);
-      position: relative;
-      overflow: hidden;
-    }
-    .panel::after {
-      content: "";
-      position: absolute;
-      inset: -30% -10% auto;
-      height: 65%;
-      background: radial-gradient(circle at top left, rgba(90, 155, 255, 0.18), transparent 65%);
-      opacity: 0.7;
-      pointer-events: none;
-    }
-    .panel h2 {
-      margin-top: 0;
-      font-size: 1.4rem;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .panel p {
-      color: rgba(247, 249, 255, 0.75);
-      line-height: 1.6;
-    }
-    label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-    input[type="number"] {
-      width: 100%;
-      padding: 12px 14px;
-      border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      background: rgba(4, 8, 16, 0.55);
-      color: var(--text);
-      font-size: 1rem;
-      box-sizing: border-box;
-    }
-    input[type="number"]:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(90, 155, 255, 0.25);
-    }
-    .input-grid {
-      display: grid;
-      gap: 18px;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    }
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 16px;
-      margin-top: 18px;
-    }
-    .kpi {
-      padding: 18px;
-      border-radius: 18px;
-      background: rgba(5, 12, 24, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-    }
-    .kpi .label {
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: rgba(247, 249, 255, 0.62);
-    }
-    .kpi .value {
-      margin-top: 8px;
-      font-size: 1.35rem;
-      font-weight: 600;
-    }
-    .ladder {
-      margin-top: 24px;
-      border-collapse: collapse;
-      width: 100%;
-      font-size: 0.95rem;
-    }
-    .ladder th, .ladder td {
-      padding: 12px 16px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      text-align: left;
-    }
-    .ladder tr.active {
-      background: rgba(90, 155, 255, 0.12);
-    }
-    .notes {
-      margin-top: 32px;
-      display: grid;
-      gap: 12px;
-      color: rgba(247, 249, 255, 0.72);
-    }
-    .notes strong {
-      color: var(--text);
-    }
-    .catalog {
-      margin-top: 24px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-    }
-    .sku-card {
-      padding: 16px;
-      border-radius: 16px;
-      background: rgba(5, 10, 18, 0.55);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      font-size: 0.9rem;
-    }
-    footer {
-      margin-top: 48px;
-      text-align: center;
-      color: rgba(247, 249, 255, 0.55);
-      font-size: 0.85rem;
-    }
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: rgba(240, 90, 126, 0.18);
-      border: 1px solid rgba(240, 90, 126, 0.32);
-      font-size: 0.85rem;
-    }
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Executive Negotiation Dashboard — PRO</title>
+<style>
+  :root{
+    --bg:#0e1020; --ink:#eaf2ff; --muted:#a9bbdf; --card:#121737; --line:#26305a;
+    --brand:#76e4ff; --accent:#71ffd9; --hot:#ff7adf; --good:#4fe08a; --warn:#ffd169;
+    --chip:#14204a; --chipb:#394e8d; --danger:#ff97a0;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:radial-gradient(1200px 600px at 10% -5%, #1b2650 5%, var(--bg) 60%) fixed;color:var(--ink);
+    font:15px/1.6 Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;}
+  a{color:inherit}
+  .wrap{max-width:1280px;margin:28px auto;padding:0 16px}
+  .hero{position:sticky;top:0;z-index:20;border:1px solid #20305b;background:linear-gradient(135deg,#0e1734,#111b3c);border-radius:18px;padding:16px 16px 12px;
+    box-shadow:0 12px 40px rgba(8,16,48,0.35);backdrop-filter:blur(4px)}
+  .hero h1{margin:0 0 4px;font-size:26px;letter-spacing:.2px}
+  .muted{color:var(--muted)}
+  .cta-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:8px}
+  .btn{appearance:none;border:1px solid #2f3e73;background:#16224a;color:#eaf2ff;padding:9px 12px;border-radius:12px;
+    font-weight:800;letter-spacing:.2px;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+  .btn:hover{transform:translateY(-1px);border-color:#4860c6}
+  .btn.brand{background:linear-gradient(135deg,var(--accent),var(--brand));color:#051029;border:0}
+  .pill{display:inline-block;padding:3px 10px;border-radius:999px;background:var(--chip);border:1px solid var(--chipb);color:#bfe4ff;font-weight:800;font-size:11px}
+  .tabs{display:flex;gap:8px;margin:14px 0 12px;flex-wrap:wrap}
+  .tabbtn{background:#101939;border:1px solid #23356c;color:#cfe0ff;padding:8px 12px;border-radius:12px;font-weight:800;cursor:pointer}
+  .tabbtn.active{background:linear-gradient(135deg,var(--accent),var(--brand));color:#071026;border-color:transparent}
+  .grid{display:grid;gap:12px}
+  .card{background:rgba(16,25,57,.88);border:1px solid #243158;border-radius:16px;padding:14px;box-shadow:0 10px 30px rgba(8,16,48,.25)}
+  h2{margin:0 0 8px;font-size:18px;color:#bfe4ff}
+  h3{margin:14px 0 8px;font-size:15px;color:#cfe0ff}
+  label{font-size:12px;color:var(--muted);font-weight:700;display:block;margin-bottom:4px}
+  input[type="number"],select{width:100%;padding:8px 10px;border-radius:10px;border:1px solid #33497d;background:#0e1734;color:var(--ink);
+    font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace}
+  .inputs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:8px}
+  .kpi{background:linear-gradient(180deg,#0f1838,#10193b);border:1px solid #2a3a6e;border-radius:14px;padding:10px}
+  .kpi .lbl{color:var(--muted);font-size:12px}
+  .kpi .val{font-weight:900;font-size:22px;margin-top:2px}
+  .ok{color:var(--good);font-weight:900}
+  .hot{color:var(--hot);font-weight:900}
+  .warn{color:var(--warn);font-weight:900}
+  .green{background:rgba(79,224,138,.12)}
+  table{width:100%;border-collapse:collapse;margin-top:8px}
+  th,td{border-bottom:1px dashed #2c3a6b;padding:8px;text-align:left}
+  th{color:#bfe4ff;background:#0f1838;border-bottom:1px solid #40539a;position:sticky;top:0;z-index:1}
+  td.number{text-align:right;font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace}
+  .right{text-align:right}
+  .hide{display:none}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .meter{height:10px;border-radius:8px;background:#1a2449;overflow:hidden;border:1px solid #2b3a6e}
+  .meter>div{height:100%;background:linear-gradient(90deg,var(--accent),var(--brand))}
+  .svg{width:100%;height:56px}
+  .note{font-size:12px;color:var(--muted)}
+  .danger{color:var(--danger)}
+</style>
 </head>
 <body>
-  <header>
-    <div>
-      <div class="badge">M4 NEGOTIATION · LIVE</div>
-      <h1>Portfolio Revenue Ladder – PRO</h1>
-      <p>
-        Input the latest funnel assumptions, align on cost per engagement, and toggle the trailing-90 revenue to
-        preview the automatic tier uplift. All calculations run client-side and sync with the shared SKU catalog.
-      </p>
+<div class="wrap">
+
+  <section class="hero">
+    <h1>Executive Negotiation Dashboard — PRO</h1>
+    <div class="muted">Start-date alignment • Portfolio discounts • Cost-per-client • 24-month upside</div>
+    <div class="cta-bar">
+      <button class="btn brand" onclick="scrollToDash()">▶ Open Live Model</button>
+      <button class="btn" onclick="downloadCSV()">Export CSV (state)</button>
+      <button class="btn" onclick="downloadJSON()">Export JSON (state)</button>
+      <span class="pill">Start Date</span>
+      <label class="row"><input type="radio" name="start" value="sep1" checked onchange="recalc()"/> Sep 1</label>
+      <label class="row"><input type="radio" name="start" value="sep15" onchange="recalc()"/> <b>Sep 15</b></label>
+      <span class="pill">Catalog</span>
+      <span id="kpiCount" class="muted">loading…</span>
     </div>
-    <a class="pill" href="index.html">← Back to landing</a>
-  </header>
+  </section>
 
-  <div class="layout">
-    <section class="panel" aria-labelledby="inputs">
-      <h2 id="inputs">Scenario inputs</h2>
-      <p>Refresh these numbers live during executive reviews. Every edit recalculates the KPIs in real time.</p>
-      <div class="input-grid">
-        <label>Leads / month
-          <input id="input-leads" type="number" min="0" step="1" value="420" />
-        </label>
-        <label>Engagement rate (%)
-          <input id="input-engagement" type="number" min="0" max="100" step="0.1" value="48" />
-        </label>
-        <label>Conversion rate (%)
-          <input id="input-conversion" type="number" min="0" max="100" step="0.1" value="18" />
-        </label>
-        <label>Revenue / sale (USD)
-          <input id="input-revenue" type="number" min="0" step="10" value="38000" />
-        </label>
-        <label>Trailing-90 revenue (USD)
-          <input id="input-trailing" type="number" min="0" step="1000" value="240000" />
-        </label>
-      </div>
-    </section>
+  <div class="tabs" id="tabs"></div>
 
-    <section class="panel" aria-labelledby="outputs">
-      <h2 id="outputs">KPI snapshot</h2>
-      <p>These KPIs align with the narrative in the board memo. Twilio share reflects the ladder tier derived from the trailing-90 total.</p>
-      <div class="kpi-grid">
-        <div class="kpi">
-          <div class="label">Engaged contacts</div>
-          <div class="value" id="kpi-engaged">0</div>
-        </div>
-        <div class="kpi">
-          <div class="label">Conversions / month</div>
-          <div class="value" id="kpi-conversions">0</div>
-        </div>
-        <div class="kpi">
-          <div class="label">Total booked revenue</div>
-          <div class="value" id="kpi-revenue">$0</div>
-        </div>
-        <div class="kpi">
-          <div class="label">Twilio share</div>
-          <div class="value" id="kpi-share">$0</div>
-        </div>
-        <div class="kpi">
-          <div class="label">Partner gross margin</div>
-          <div class="value" id="kpi-gm">$0</div>
-        </div>
-      </div>
-    </section>
-  </div>
-
-  <section class="panel" aria-labelledby="economics">
-    <h2 id="economics">Unit economics</h2>
-    <div class="kpi-grid">
-      <div class="kpi">
-        <div class="label">Cost per engagement</div>
-        <div class="value" id="kpi-cpe">$0</div>
-      </div>
-      <div class="kpi">
-        <div class="label">Cost per conversion</div>
-        <div class="value" id="kpi-cpc">$0</div>
-      </div>
-      <div class="kpi">
-        <div class="label">Gross margin / sale</div>
-        <div class="value" id="kpi-gm-sale">$0</div>
-      </div>
-      <div class="kpi">
-        <div class="label">Active tier</div>
-        <div class="value" id="kpi-tier">Tier A</div>
-      </div>
+  <!-- 1. Leads & Segments -->
+  <section class="card" data-tab="Leads & Segments">
+    <h2>Leads & Segments</h2>
+    <div class="inputs">
+      <div><label>Leads / month</label><input id="inLeads" type="number" value="1000000" oninput="recalc()"/></div>
+      <div><label>Avg words / outbound message</label><input id="inWords" type="number" value="20" oninput="recalc()"/></div>
+      <div><label>Conversations / lead</label><input id="inConvPerLead" type="number" step="0.1" value="1" oninput="recalc()"/></div>
+      <div><label>Outbound msgs / conversation</label><input id="inOutPerConv" type="number" step="0.1" value="2" oninput="recalc()"/></div>
+      <div><label>Inbound msgs / conversation</label><input id="inInPerConv" type="number" step="0.1" value="2" oninput="recalc()"/></div>
+      <div><label>RCS adoption (0–1)</label><input id="inRcsRate" type="number" step="0.01" value="0.6" oninput="recalc()"/></div>
+      <div><label>MMS adoption of non-RCS (0–1)</label><input id="inMmsRate" type="number" step="0.01" value="0.2" oninput="recalc()"/></div>
+      <div><label>SMS Toll-Free share (0–1)</label><input id="inTfShare" type="number" step="0.01" value="0.3" oninput="recalc()"/></div>
+      <div><label>Verify attempts / lead</label><input id="inVerifyPerLead" type="number" step="0.1" value="0.5" oninput="recalc()"/></div>
+      <div><label>Verify success rate (0–1)</label><input id="inVerifySuccess" type="number" step="0.01" value="0.9" oninput="recalc()"/></div>
+      <div><label>AI replies / conversation</label><input id="inAiReplies" type="number" step="0.1" value="1" oninput="recalc()"/></div>
+      <div><label>Lookups / workflow</label><input id="inLookups" type="number" step="0.1" value="0.2" oninput="recalc()"/></div>
+      <div><label>Voice calls / lead</label><input id="inCallsPerLead" type="number" step="0.1" value="0.1" oninput="recalc()"/></div>
+      <div><label>Avg voice minutes / call</label><input id="inMinutesPerCall" type="number" step="0.1" value="4" oninput="recalc()"/></div>
+      <div><label>10DLC campaigns active</label><input id="inCampaigns" type="number" value="3" oninput="recalc()"/></div>
     </div>
-    <table class="ladder" aria-describedby="ladder-caption">
-      <caption id="ladder-caption" style="caption-side: bottom; color: rgba(247,249,255,0.65); padding-top: 12px;">
-        Tier thresholds are evaluated against the trailing-90 revenue figure.
-      </caption>
-      <thead>
-        <tr>
-          <th scope="col">Tier</th>
-          <th scope="col">Threshold (USD)</th>
-          <th scope="col">Twilio portfolio share</th>
-          <th scope="col">Narrative</th>
-        </tr>
-      </thead>
-      <tbody id="ladder-body"></tbody>
+    <div class="kpis">
+      <div class="kpi"><div class="lbl">Conversations</div><div id="kpiConvs" class="val">0</div></div>
+      <div class="kpi"><div class="lbl">Outbound msgs</div><div id="kpiOut" class="val">0</div></div>
+      <div class="kpi"><div class="lbl">Inbound msgs</div><div id="kpiIn" class="val">0</div></div>
+      <div class="kpi"><div class="lbl">Segments / msg</div><div id="kpiSegs" class="val">1</div></div>
+    </div>
+    <div class="note">Segments per message computed from words (GSM-7, 160/153 split).</div>
+  </section>
+
+  <!-- 2. Usage & Costs (Full Catalog) -->
+  <section class="card hide" data-tab="Usage & Costs">
+    <h2>Usage & Costs — Full Catalog</h2>
+    <div class="row note">
+      <span class="pill">Discount Ladder</span>
+      <label>Tier A (%) <input id="askA" type="number" step="1" value="32" oninput="recalc()"/></label>
+      <label>Tier B (%) <input id="askB" type="number" step="1" value="37" oninput="recalc()"/></label>
+      <label>Tier C (%) <input id="askC" type="number" step="1" value="45" oninput="recalc()"/></label>
+      <label>Trailing-90 ($) <input id="t90" type="number" step="1000" value="0" oninput="recalc()"/></label>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi"><div class="lbl">Monthly cost (rack)</div><div id="kpiMonthlyRack" class="val">$0</div></div>
+      <div class="kpi"><div class="lbl">Monthly cost (ask/contract)</div><div id="kpiMonthlyAsk" class="val ok">$0</div></div>
+      <div class="kpi"><div class="lbl">Messages (total)</div><div id="kpiMsgs" class="val">0</div></div>
+      <div class="kpi"><div class="lbl">Blended $/msg</div><div id="kpiCPM" class="val">$0.0000</div></div>
+    </div>
+
+    <h3>Portfolio Tier</h3>
+    <div class="row">
+      <div class="kpi" style="min-width:240px"><div class="lbl">Active Tier</div><div id="kpiTier" class="val">A</div></div>
+      <div class="kpi" style="min-width:240px"><div class="lbl">% to next tier</div><div id="kpiToNext" class="val">—</div></div>
+      <div class="kpi" style="flex:1"><div class="lbl">Progress</div><div class="meter"><div id="meterFill" style="width:0%"></div></div></div>
+    </div>
+
+    <h3 style="margin-top:12px">SKU Breakdown</h3>
+    <div style="max-height:420px; overflow:auto; margin-top:8px;">
+      <table id="skuTable">
+        <thead>
+          <tr>
+            <th>#</th><th>Theme</th><th>Category</th><th>SKU</th><th>Unit</th>
+            <th class="right">Rack</th><th class="right">Contract</th><th class="right">Ask %</th>
+            <th class="right">Eff. Rate</th><th class="right">Units</th><th class="right">Cost</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 3. Cost per Client -->
+  <section class="card hide" data-tab="Cost per Client">
+    <h2>Cost per Client (CPE / CPC / GM)</h2>
+    <div class="inputs">
+      <div><label>Engagement rate (%)</label><input id="engRate" type="number" step="0.1" value="19" oninput="recalc()"/></div>
+      <div><label>Conversion rate (%)</label><input id="convRate" type="number" step="0.01" value="1.0" oninput="recalc()"/></div>
+      <div><label>Revenue / sale ($)</label><input id="revSale" type="number" step="1" value="120" oninput="recalc()"/></div>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><div class="lbl">Cost per engaged</div><div id="kpiCPEng" class="val">$0.00</div></div>
+      <div class="kpi"><div class="lbl">Cost per conversion</div><div id="kpiCPC" class="val hot">$0.00</div></div>
+      <div class="kpi"><div class="lbl">Gross margin / sale</div><div id="kpiGM" class="val ok">$0.00</div></div>
+    </div>
+    <div class="note">CPE uses portfolio “ask or contract” effective rates; CPC divides total engaged spend by converted sales.</div>
+  </section>
+
+  <!-- 4. Projections -->
+  <section class="card hide" data-tab="Projections">
+    <h2>24-Month Projection</h2>
+    <div class="row">
+      <label>Start monthly spend ($) <input id="projStart" type="number" value="100000" oninput="renderProjection()"/></label>
+      <label>Growth % / month <input id="projG" type="number" step="0.1" value="13.1" oninput="renderProjection()"/></label>
+      <label>Months <input id="projM" type="number" value="24" oninput="renderProjection()"/></label>
+    </div>
+    <svg id="spark" class="svg"></svg>
+    <table>
+      <thead><tr><th>#</th><th class="right">Monthly Spend</th><th class="right">Cumulative</th></tr></thead>
+      <tbody id="tblProj"></tbody>
     </table>
   </section>
 
-  <section class="panel" aria-labelledby="catalog-section">
-    <h2 id="catalog-section">SKU drilldown</h2>
-    <p>The catalog is shared with the landing page. Filter by category to highlight talking points.</p>
-    <div class="input-grid" style="margin-bottom: 16px;">
-      <label>Filter by category
-        <input id="catalog-filter" type="text" placeholder="e.g. Messaging" />
-      </label>
-      <label>Minimum ladder tier
-        <input id="catalog-tier" type="text" placeholder="A" maxlength="1" />
-      </label>
-    </div>
-    <div id="catalog" class="catalog" role="list"></div>
+  <!-- 5. Contract vs Rack vs Ask -->
+  <section class="card hide" data-tab="Contract vs Rack vs Ask">
+    <h2>Contract vs Rack vs Ask</h2>
+    <div class="note">Comparing locked contract items against rack and your active ladder.</div>
+    <table>
+      <thead><tr><th>SKU</th><th class="right">Rack</th><th class="right">Contract</th><th class="right">Ask Eff.</th><th class="right">Δ Rack→Contract</th><th class="right">Δ Rack→Ask</th></tr></thead>
+      <tbody id="tblCompare"></tbody>
+    </table>
   </section>
 
-  <section class="panel" aria-labelledby="talk-track">
-    <h2 id="talk-track">Talk track</h2>
-    <div class="notes">
-      <p><strong>Cost per client walkthrough:</strong> Start with current leads per month, layer the actual engagement and conversion rates, then highlight how the trailing-90 jump unlocks the 37% and 45% portfolio share.</p>
-      <p><strong>Credit alignment:</strong> 75% pre-enablement credit is pre-loaded in the amendment. Reference the <a href="contracts/amendment_v2.md">markdown download</a> if legal asks for line-level wording.</p>
-      <p><strong>Automation:</strong> Run <code>python3 invoice_rollup.py</code> after each invoice drop. The Slack notifier surfaces the new tier at 13:00 UTC daily.</p>
+  <!-- 6. Exports -->
+  <section class="card hide" data-tab="Exports">
+    <h2>Exports</h2>
+    <div class="row">
+      <button class="btn" onclick="downloadCSV()">Download CSV (state)</button>
+      <button class="btn" onclick="downloadJSON()">Download JSON (state)</button>
     </div>
+    <div class="note" style="margin-top:8px">State = inputs + ladder + trailing-90 + contract references. Catalog is fetched from <code>twilio_sku_catalog.json</code>.</div>
   </section>
 
-  <footer>
-    Built for executives — shareable URL ready for GitHub Pages. Questions? Ping the partnership desk.
-  </footer>
+</div>
 
-  <script>
-    const ladder = [
-      { tier: "A", threshold: 0, share: 0.32, narrative: "Entry tier with immediate runway to 37%." },
-      { tier: "B", threshold: 250000, share: 0.37, narrative: "Trailing-90 clears $250K — accelerator engaged." },
-      { tier: "C", threshold: 1000000, share: 0.45, narrative: "Flagship alignment — enterprise envelope unlocked." }
-    ];
+<script>
+  // ---------- Tabs ----------
+  const TABS = ["Leads & Segments","Usage & Costs","Cost per Client","Projections","Contract vs Rack vs Ask","Exports"];
+  const tabsEl = document.getElementById('tabs');
+  function switchTab(i){
+    document.querySelectorAll('.tabbtn').forEach((b,idx)=>b.classList.toggle('active', idx===i));
+    document.querySelectorAll('[data-tab]').forEach((s,idx)=>s.classList.toggle('hide', idx!==i));
+    if (i===3) renderProjection();
+    if (i===1) renderTable();
+    if (i===4) renderCompare();
+  }
+  TABS.forEach((t,i)=>{ const b=document.createElement('button'); b.className='tabbtn'+(i===0?' active':''); b.textContent=t; b.onclick=()=>switchTab(i); tabsEl.appendChild(b); });
+  function scrollToDash(){ document.querySelectorAll('.tabbtn')[0].scrollIntoView({behavior:'smooth',block:'center'}) }
 
-    const catalogContainer = document.getElementById("catalog");
-    const filterInput = document.getElementById("catalog-filter");
-    const tierInput = document.getElementById("catalog-tier");
+  // ---------- Helpers ----------
+  const $ = id => document.getElementById(id);
+  const money = n => '$'+(Number(n)||0).toLocaleString(undefined,{maximumFractionDigits:2});
+  const pct = n => (Number(n)||0).toFixed(1)+'%';
+  const num = id => Number($(id).value||0);
+  function getStart(){ const n=[...document.querySelectorAll('input[name="start"]')].find(x=>x.checked); return n?n.value:'sep1'; }
 
-    function formatCurrency(value) {
-      return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(value);
+  // Segments from words (GSM-7)
+  function segmentsFromWords(words){
+    const chars = words*6; // crude approx
+    if (chars<=160) return 1;
+    return Math.ceil(chars/153);
+  }
+
+  // ---------- Catalog ----------
+  let CATALOG = { skus: [] };
+  let CATALOG_LOCKED = [];
+  async function loadCatalog(){
+    try{
+      const r = await fetch('./twilio_sku_catalog.json',{cache:'no-store'});
+      const j = await r.json();
+      CATALOG = j || {skus:[]};
+      $('kpiCount').textContent = `SKUs: ${CATALOG.skus?.length||0}`;
+      CATALOG_LOCKED = (CATALOG.skus||[]).filter(s=>s.locked);
+    }catch(e){
+      $('kpiCount').innerHTML = '<span class="danger">catalog not found</span>';
+      CATALOG = { skus: [] }; CATALOG_LOCKED=[];
+    }
+  }
+
+  // ---------- Drivers ----------
+  function deriveDrivers(){
+    const leads = num('inLeads'), convPerLead=num('inConvPerLead'), outPerConv=num('inOutPerConv'), inPerConv=num('inInPerConv');
+    const words=num('inWords'), segPerMsg=segmentsFromWords(words);
+    const conversations = leads*convPerLead;
+    const outMsgs = conversations*outPerConv, inMsgs=conversations*inPerConv;
+    const rcsRate=num('inRcsRate'), mmsRate=num('inMmsRate'), tfShare=num('inTfShare');
+    const nonRcs = outMsgs*(1-rcsRate);
+    const mms = nonRcs*mmsRate;
+    const smsMsgs = nonRcs*(1-mmsRate);
+    const smsSeg = smsMsgs*segPerMsg;
+    const smsStd = smsSeg*(1-tfShare), smsTf = smsSeg*tfShare;
+    const verify = leads*num('inVerifyPerLead')*num('inVerifySuccess');
+    const ai = conversations*num('inAiReplies');
+    const lookups = leads*num('inLookups');
+    const voice = leads*num('inCallsPerLead')*num('inMinutesPerCall');
+    const campaigns = num('inCampaigns');
+    return {leads,conversations,outMsgs,inMsgs,segPerMsg,smsStd,smsTf,mms,rcs: outMsgs*rcsRate,verify,ai,lookups,voice,campaigns};
+  }
+
+  // ---------- Ladder logic ----------
+  function ladderDisc(t90){
+    const A=num('askA')/100, B=num('askB')/100, C=num('askC')/100;
+    let disc=A, tier='A', toNext='—', pctToNext=0;
+    if (t90>250000){ disc=B; tier='B'; pctToNext=Math.min(100, ((t90-250000)/(1000000-250000))*100); toNext = (1000000 - t90) > 0 ? '$'+(1000000 - t90).toLocaleString() : '—'; }
+    if (t90>1000000){ disc=C; tier='C'; pctToNext=100; toNext='—'; }
+    $('kpiTier').textContent=tier; $('kpiToNext').textContent=toNext; $('meterFill').style.width=pctToNext+'%';
+    return disc;
+  }
+
+  const lastCalc = { monthlyRack: 0, monthlyAsk: 0 };
+
+  // ---------- Recalc (main) ----------
+  function recalc(){
+    renderTable(); // Updates monthlyRack/Ask & KPIs inside
+    // Leads KPIs
+    const D=deriveDrivers();
+    $('kpiConvs').textContent=D.conversations.toLocaleString();
+    $('kpiOut').textContent=D.outMsgs.toLocaleString();
+    $('kpiIn').textContent=D.inMsgs.toLocaleString();
+    $('kpiSegs').textContent=D.segPerMsg.toFixed(0);
+
+    // CPE/CPC/GM
+    const monthlyAsk = lastCalc.monthlyAsk || 0;
+    const eng = num('engRate')/100, conv = num('convRate')/100;
+    const engaged=D.leads*eng, converted=D.leads*conv;
+    const cpe = engaged? (monthlyAsk/engaged) : 0;
+    const cpc = converted? (monthlyAsk/converted) : 0;
+    $('kpiCPEng').textContent = money(cpe);
+    $('kpiCPC').textContent = money(cpc);
+    $('kpiGM').textContent = money(Math.max(0, num('revSale')-cpc));
+  }
+
+  // ---------- Usage & Costs Table ----------
+  function renderTable(){
+    const tbody=document.querySelector('#skuTable tbody'); tbody.innerHTML='';
+    const t90 = num('t90');
+    const disc = ladderDisc(t90);
+    const D=deriveDrivers();
+
+    // Unit heuristics mapping
+    function unitsFor(s){
+      const sku = (s.sku||'') + ' ' + (s.category||'');
+      if (/SMS Outbound.*Toll.?Free/i.test(sku)) return D.smsTf;
+      if (/SMS Outbound/i.test(sku)) return D.smsStd;
+      if (/RCS/i.test(sku)) return D.rcs;
+      if (/MMS/i.test(sku)) return D.mms;
+      if (/Verify/i.test(sku)) return D.verify;
+      if (/AI|Assistant/i.test(sku)) return D.ai;
+      if (/Lookup|CNAM|Identity|Reassigned|Line Type/i.test(sku)) return D.lookups;
+      if (/Voice|SIP|Trunk|Minute/i.test(sku)) return D.voice;
+      if (/Campaign/i.test(sku)) return D.campaigns;
+      if (/Infra|Toolkit|Compliance/i.test(sku)) return 1;
+      return 0; // leave others at zero until you map them
     }
 
-    function computeTier(trailing) {
-      let selected = ladder[0];
-      for (const step of ladder) {
-        if (trailing >= step.threshold) {
-          selected = step;
-        }
-      }
-      return selected;
-    }
+    let monthlyRack=0, monthlyAsk=0, msgsTotal = (D.smsStd+D.smsTf+D.rcs+D.mms+D.verify+D.ai);
 
-    function updateLadderHighlight(activeTier) {
-      const tbody = document.getElementById("ladder-body");
-      tbody.innerHTML = "";
-      ladder.forEach((step) => {
-        const row = document.createElement("tr");
-        if (step.tier === activeTier.tier) {
-          row.classList.add("active");
-        }
-        row.innerHTML = `
-          <th scope="row">${step.tier}</th>
-          <td>${formatCurrency(step.threshold)}</td>
-          <td>${(step.share * 100).toFixed(0)}%</td>
-          <td>${step.narrative}</td>
-        `;
-        tbody.appendChild(row);
-      });
-    }
+    (CATALOG.skus||[]).forEach((r,idx)=>{
+      const rack = Number(r.rack_rate)||0;
+      const contract = Number(r.contract_rate)||0;
+      const locked = !!r.locked;
 
-    function computeKpis() {
-      const leads = Number(document.getElementById("input-leads").value) || 0;
-      const engagementRate = Math.min(Math.max(Number(document.getElementById("input-engagement").value) || 0, 0), 100);
-      const conversionRate = Math.min(Math.max(Number(document.getElementById("input-conversion").value) || 0, 0), 100);
-      const revenuePerSale = Number(document.getElementById("input-revenue").value) || 0;
-      const trailing = Number(document.getElementById("input-trailing").value) || 0;
+      // Choose effective rate
+      const askRate = rack>0 ? rack*(1-disc) : (contract>0? contract : 0);
+      const eff = contract>0 ? contract : askRate;
 
-      const engaged = leads * (engagementRate / 100);
-      const conversions = engaged * (conversionRate / 100);
-      const totalRevenue = conversions * revenuePerSale;
+      const u = unitsFor(r);
+      const costR = u*rack, costA=u*eff;
+      monthlyRack += costR; monthlyAsk += costA;
 
-      const activeTier = computeTier(trailing);
-      const twilioShare = totalRevenue * activeTier.share;
-      const partnerGross = totalRevenue - twilioShare;
-
-      const costPerEngagement = engaged ? twilioShare / engaged : 0;
-      const costPerConversion = conversions ? twilioShare / conversions : 0;
-      const grossMarginPerSale = conversions ? partnerGross / conversions : revenuePerSale * (1 - activeTier.share);
-
-      document.getElementById("kpi-engaged").textContent = Math.round(engaged).toLocaleString();
-      document.getElementById("kpi-conversions").textContent = Math.round(conversions).toLocaleString();
-      document.getElementById("kpi-revenue").textContent = formatCurrency(totalRevenue);
-      document.getElementById("kpi-share").textContent = formatCurrency(twilioShare);
-      document.getElementById("kpi-gm").textContent = formatCurrency(partnerGross);
-      document.getElementById("kpi-cpe").textContent = formatCurrency(costPerEngagement);
-      document.getElementById("kpi-cpc").textContent = formatCurrency(costPerConversion);
-      document.getElementById("kpi-gm-sale").textContent = formatCurrency(grossMarginPerSale);
-      document.getElementById("kpi-tier").textContent = `Tier ${activeTier.tier}`;
-
-      updateLadderHighlight(activeTier);
-    }
-
-    ["input-leads", "input-engagement", "input-conversion", "input-revenue", "input-trailing"].forEach((id) => {
-      document.getElementById(id).addEventListener("input", computeKpis);
+      const tr=document.createElement('tr'); if(locked) tr.className='green';
+      tr.innerHTML = `<td>${idx+1}</td>
+        <td>${r.theme||''}</td>
+        <td>${r.category||''}</td>
+        <td>${r.sku||''}</td>
+        <td>${r.unit||''}</td>
+        <td class="number">${rack? money(rack):'—'}</td>
+        <td class="number">${contract? money(contract):'—'}</td>
+        <td class="number">${rack? Math.round(disc*100)+'%':'—'}</td>
+        <td class="number">${eff? money(eff):'—'}</td>
+        <td class="number">${(u||0).toLocaleString()}</td>
+        <td class="number">${money(costA)}</td>`;
+      tbody.appendChild(tr);
     });
 
-    async function loadCatalog() {
-      try {
-        const response = await fetch("twilio_sku_catalog.json", { cache: "no-store" });
-        if (!response.ok) throw new Error(`Request failed: ${response.status}`);
-        const data = await response.json();
-        renderCatalog(data.skus);
-      } catch (error) {
-        const fallback = document.createElement("p");
-        fallback.style.color = "#ff9ba6";
-        fallback.textContent = `Unable to load SKU catalog: ${error.message}`;
-        catalogContainer.replaceWith(fallback);
-        console.error("Failed to load catalog", error);
-      }
+    $('kpiMonthlyRack').textContent = money(monthlyRack);
+    $('kpiMonthlyAsk').textContent = money(monthlyAsk);
+    $('kpiMsgs').textContent = (msgsTotal||0).toLocaleString();
+    $('kpiCPM').textContent = msgsTotal? ('$'+(monthlyAsk/msgsTotal).toFixed(4)) : '$0.0000';
+
+    lastCalc.monthlyRack=monthlyRack; lastCalc.monthlyAsk=monthlyAsk;
+  }
+
+  // ---------- Contract vs Rack vs Ask (locked subset) ----------
+  function renderCompare(){
+    const tbody=document.querySelector('#tblCompare'); tbody.innerHTML='';
+    const disc = ladderDisc(num('t90'));
+    const locked = CATALOG_LOCKED.slice(0, 40); // show up to 40 locked rows
+
+    locked.forEach(r=>{
+      const rack = Number(r.rack_rate)||0, ctr = Number(r.contract_rate)||0;
+      const ask = rack? rack*(1-disc) : (ctr||0);
+      const d1 = (rack && ctr)? (rack-ctr) : 0, d2 = rack? (rack-ask) : 0;
+      const tr=document.createElement('tr'); tr.className='green';
+      tr.innerHTML=`<td>${r.sku||''}</td>
+        <td class="number">${rack? money(rack):'—'}</td>
+        <td class="number">${ctr? money(ctr):'—'}</td>
+        <td class="number">${ask? money(ask):'—'}</td>
+        <td class="number">${money(d1)}</td>
+        <td class="number">${money(d2)}</td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // ---------- Projections ----------
+  function renderProjection(){
+    const start=num('projStart'), g=num('projG')/100, m=num('projM');
+    let cur=start, cum=0; const body=$('tblProj'); body.innerHTML=''; const pts=[];
+    for(let i=1;i<=m;i++){
+      if(i>1) cur=cur*(1+g); cum+=cur; pts.push(cur);
+      const tr=document.createElement('tr'); tr.innerHTML=`<td>${i}</td><td class="number">${money(cur)}</td><td class="number">${money(cum)}</td>`; body.appendChild(tr);
     }
-
-    function renderCatalog(skus) {
-      catalogContainer.innerHTML = "";
-      const categoryFilter = filterInput.value.trim().toLowerCase();
-      const tierFloor = tierInput.value.trim().toUpperCase();
-
-      const filtered = skus.filter((sku) => {
-        const matchesCategory = !categoryFilter || sku.category.toLowerCase().includes(categoryFilter);
-        const meetsTier = !tierFloor || sku.ladder.some((step) => step.tier >= tierFloor);
-        return matchesCategory && meetsTier;
-      });
-
-      filtered.forEach((sku) => {
-        const card = document.createElement("article");
-        card.className = "sku-card";
-        card.innerHTML = `
-          <strong>${sku.name}</strong><br />
-          <span>${sku.id} · ${sku.category}</span><br />
-          <span>List: $${sku.list_price_usd.toFixed(4)} ${sku.unit}</span><br />
-          <span>Usage: ${sku.notes}</span>
-        `;
-        catalogContainer.appendChild(card);
-      });
-
-      if (!filtered.length) {
-        const empty = document.createElement("p");
-        empty.textContent = "No SKUs match the current filters.";
-        empty.style.color = "#ff9ba6";
-        catalogContainer.appendChild(empty);
-      }
+    const svg=$('spark'); const w=svg.clientWidth||600, h=56; svg.setAttribute('viewBox',`0 0 ${w} ${h}`); svg.innerHTML='';
+    if(pts.length){
+      const max=Math.max(...pts), min=Math.min(...pts), xs=pts.map((p,i)=>i*(w/(pts.length-1||1))), ys=pts.map(p=>h-((p-min)/(max-min||1))*h);
+      let d='M '+xs[0]+' '+ys[0]; for(let i=1;i<xs.length;i++) d+=` L ${xs[i]} ${ys[i]}`;
+      const path=document.createElementNS('http://www.w3.org/2000/svg','path'); path.setAttribute('d',d); path.setAttribute('stroke', '#71ffd9'); path.setAttribute('fill','none'); path.setAttribute('stroke-width','2'); svg.appendChild(path);
     }
+  }
 
-    filterInput.addEventListener("input", () => loadCatalog());
-    tierInput.addEventListener("input", () => loadCatalog());
+  // ---------- Export state ----------
+  function currentState(){
+    const o={ start:getStart() };
+    const ids=['inLeads','inWords','inConvPerLead','inOutPerConv','inInPerConv','inRcsRate','inMmsRate','inTfShare','inVerifyPerLead','inVerifySuccess','inAiReplies','inLookups','inCallsPerLead','inMinutesPerCall','inCampaigns','askA','askB','askC','t90','engRate','convRate','revSale','projStart','projG','projM'];
+    ids.forEach(id=>o[id]=num(id));
+    return o;
+  }
+  function downloadCSV(){
+    const o=currentState(); const rows=[["Key","Value"]]; Object.keys(o).forEach(k=>rows.push([k,o[k]]));
+    const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([rows.map(r=>r.join(',')).join('\n')],{type:'text/csv'})); a.download='dashboard_state.csv';
+    document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href); a.remove();},0);
+  }
+  function downloadJSON(){
+    const payload = { state: currentState(), catalog_count: (CATALOG.skus||[]).length };
+    const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:'application/json'})); a.download='dashboard_state.json';
+    document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href); a.remove();},0);
+  }
 
-    computeKpis();
-    loadCatalog();
-  </script>
+  // ---------- Init ----------
+  (async function init(){
+    document.querySelectorAll('[data-tab]').forEach((s,idx)=>{ if(idx>0) s.classList.add('hide'); });
+    (await loadCatalog());
+    recalc(); renderProjection();
+  })();
+</script>
 </body>
 </html>
-main
+
+
