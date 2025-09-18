@@ -7,6 +7,7 @@ from twilio_revenue_and_expense_ngotiation_model import (
     calculate_negotiation_envelope,
     determine_margin_envelope,
 )
+from twilio_revenue_and_expense_ngotiation_model.model import _to_decimal_money
 
 
 def test_calculate_envelope_with_stream_breakdown():
@@ -81,3 +82,8 @@ def test_calculate_envelope_dataclass_return():
     assert envelope.floor_margin == Decimal("0.3300")
     assert envelope.ceiling_margin == Decimal("0.3700")
     assert envelope.target_revenue == Decimal("953.85")
+
+
+def test_to_decimal_money_supports_scientific_notation():
+    assert _to_decimal_money("1e3", "USD") == Decimal("1000")
+    assert _to_decimal_money("1e-3", "USD") == Decimal("0.001")
