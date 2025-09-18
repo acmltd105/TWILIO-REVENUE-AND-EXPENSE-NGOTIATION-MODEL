@@ -1,5 +1,8 @@
 {
+codex/add-files-for-github-pages-setup
+
 codex/implement-enhancements-for-twilio-dashboard
+main
   "skus": [
     { "theme":"Messaging (Sales & Marketing)","icon":"💬","category":"Messaging","sku":"US SMS Outbound (Standard)","unit":"segment","rack_rate":0.0083,"contract_rate":0.0047,"locked":true,"source":"contract_exhibit_A" },
     { "theme":"Messaging (Sales & Marketing)","icon":"💬","category":"Messaging","sku":"US SMS Outbound (Toll-Free)","unit":"segment","rack_rate":0.0083,"contract_rate":0.0055,"locked":true,"source":"contract_exhibit_A" },
@@ -48,7 +51,10 @@ codex/implement-enhancements-for-twilio-dashboard
 
     { "theme":"Email (SendGrid)","icon":"✉️","category":"SendGrid","sku":"Email API (Essentials)","unit":"month","rack_rate":19.9500,"contract_rate":null,"locked":false,"source":"rack" },
     { "theme":"Email (SendGrid)","icon":"✉️","category":"SendGrid","sku":"Marketing Campaigns (Basic)","unit":"month","rack_rate":15.0000,"contract_rate":null,"locked":false,"source":"rack" },
+codex/add-files-for-github-pages-setup
+
     { "theme":"Email (SendGrid)","icon":"✉️","category":"SendGrid","sku":"Dedicated IP","unit":"month","rack_rate":30.0000,"contract_rate":null,"locked":false,"source":"rack" },
+main
 
     { "theme":"Contact Center (Flex)","icon":"🎧","category":"Flex","sku":"Named User","unit":"month","rack_rate":150.0000,"contract_rate":null,"locked":false,"source":"rack" },
     { "theme":"Contact Center (Flex)","icon":"🎧","category":"Flex","sku":"Active User Hour","unit":"user","rack_rate":1.0000,"contract_rate":null,"locked":false,"source":"rack" },
@@ -62,6 +68,9 @@ codex/implement-enhancements-for-twilio-dashboard
     { "theme":"Data & Customer Platform (Segment)","icon":"🧩","category":"Segment","sku":"Protocols","unit":"month","rack_rate":350.0000,"contract_rate":null,"locked":false,"source":"rack" },
 
     { "theme":"AI & Automation","icon":"🤖","category":"AI Assistant","sku":"Assistant Message","unit":"message","rack_rate":0.0200,"contract_rate":null,"locked":false,"source":"rack" },
+codex/add-files-for-github-pages-setup
+    { "theme":"AI & Automation","icon":"🤖","category":"Conversational Intelligence","sku":"Standard (per minute)","unit":"minute","rack_rate":0.0040,"contract_rate":null,"locked":false,"source":"rack" }
+
     { "theme":"AI & Automation","icon":"🤖","category":"Conversational Intelligence","sku":"Standard (per minute)","unit":"minute","rack_rate":0.0040,"contract_rate":null,"locked":false,"source":"rack" },
     { "theme":"AI & Automation","icon":"🤖","category":"Conversational Intelligence","sku":"Text Analysis","unit":"minute","rack_rate":0.0035,"contract_rate":null,"locked":false,"source":"rack" },
 
@@ -186,5 +195,6 @@ codex/implement-enhancements-for-twilio-dashboard
       "notes": "LLM-guided assist with conversation intelligence and compliance guardrails."
     }
      main
+main
   ]
 }
