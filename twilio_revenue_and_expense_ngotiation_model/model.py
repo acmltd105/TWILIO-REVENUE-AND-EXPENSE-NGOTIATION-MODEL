@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from decimal import Decimal, ROUND_HALF_EVEN, getcontext
+from decimal import Decimal, ROUND_HALF_EVEN, InvalidOperation, getcontext
 from types import MappingProxyType
 from typing import Any, Callable, Dict, List, Mapping, Optional, Sequence, Tuple, Union
 
@@ -503,21 +503,82 @@ def _ensure_iterable(value: StreamLike) -> List[Any]:
 def _to_decimal_money(value: MoneyLike, currency: str) -> Decimal:
     if currency is None:
         currency = "USD"
+
     if isinstance(value, Decimal):
-        result = value
-    elif isinstance(value, (int, float)):
-        result = Decimal(str(value))
-    elif isinstance(value, str):
-        stripped = value.strip().replace(",", "")
-        upper_currency = currency.upper()
-        if stripped.upper().startswith(upper_currency + " "):
-            stripped = stripped[len(upper_currency) + 1 :]
-        elif stripped.upper().startswith(upper_currency):
-            stripped = stripped[len(upper_currency) :]
-        result = Decimal(stripped)
-    else:
-        raise TypeError(f"Unsupported monetary type: {type(value)!r}")
-    return result
+        return value
+
+    if isinstance(value, (int, float)):
+        return Decimal(str(value))
+
+    if isinstance(value, str):
+        stripped = value.strip()
+        if not stripped:
+            raise ValueError("Monetary string is empty.")
+
+        # Accounting formats may wrap the number in parentheses to denote a negative value.
+        is_negative = False
+        if stripped.startswith("(") and stripped.endswith(")"):
+            is_negative = True
+            stripped = stripped[1:-1].strip()
+
+        stripped = stripped.replace(",", "")
+
+        upper_currency = (currency or "USD").upper()
+
+        def strip_currency_code(text: str) -> str:
+            cleaned = text
+            while cleaned:
+                upper = cleaned.upper()
+                if upper.startswith(upper_currency):
+                    cleaned = cleaned[len(upper_currency) :].lstrip()
+                    continue
+                if upper.endswith(upper_currency):
+                    cleaned = cleaned[: -len(upper_currency)].rstrip()
+                    continue
+                break
+            return cleaned
+
+        stripped = strip_currency_code(stripped)
+
+        # Remove common currency symbols and whitespace artefacts.
+        stripped = stripped.translate(
+            str.maketrans("", "", " $€£¥₽₹₩₺₪₫฿₱₦₴₭₡₲ ")
+        )
+
+        # Trailing minus signs are occasionally used; normalise them into a leading sign.
+        if stripped.endswith("-"):
+            is_negative = not is_negative
+            stripped = stripped[:-1]
+
+        stripped = stripped.strip()
+
+        sign = 1
+        if stripped.startswith("-"):
+            sign = -1
+            stripped = stripped[1:]
+        elif stripped.startswith("+"):
+            stripped = stripped[1:]
+
+        stripped = stripped.strip()
+
+        # Remove any remaining non-numeric artefacts such as currency initials.
+        stripped = "".join(ch for ch in stripped if ch in "0123456789.-+")
+
+        if not stripped or stripped in {"-", "+"}:
+            raise ValueError(f"Unsupported monetary value: {value!r}")
+
+        try:
+            result = Decimal(stripped)
+        except InvalidOperation as exc:
+            raise ValueError(f"Unable to parse monetary value: {value!r}") from exc
+
+        if sign == -1:
+            result = -result
+        if is_negative:
+            result = -result
+        return result
+
+    raise TypeError(f"Unsupported monetary type: {type(value)!r}")
 
 
 def _to_decimal_number(value: Any, *, default: Union[int, float, Decimal]) -> Decimal:
