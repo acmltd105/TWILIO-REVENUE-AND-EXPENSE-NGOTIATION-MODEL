@@ -1,6 +1,7 @@
 """Core negotiation model primitives."""
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_EVEN, getcontext
 from types import MappingProxyType
@@ -10,6 +11,23 @@ getcontext().prec = 28
 
 MoneyLike = Union[int, float, str, Decimal]
 StreamLike = Union[MoneyLike, Mapping[str, Any], Sequence[Any], Any]
+
+_CURRENCY_SYMBOLS = "€£¥₽₹₩₺₴₦₱₪฿₫₭₲₵₡$"
+_CURRENCY_SYMBOL_TRANSLATION = str.maketrans("", "", _CURRENCY_SYMBOLS)
+_MULTI_CHAR_CURRENCY_SYMBOLS = (
+    "R$",
+    "A$",
+    "C$",
+    "CA$",
+    "HK$",
+    "NZ$",
+    "S$",
+    "US$",
+    "CN¥",
+    "JP¥",
+    "NT$",
+    "AU$",
+)
 
 CURRENCY_MINOR_UNITS: Mapping[str, int] = MappingProxyType(
     {
@@ -508,13 +526,90 @@ def _to_decimal_money(value: MoneyLike, currency: str) -> Decimal:
     elif isinstance(value, (int, float)):
         result = Decimal(str(value))
     elif isinstance(value, str):
-        stripped = value.strip().replace(",", "")
-        upper_currency = currency.upper()
-        if stripped.upper().startswith(upper_currency + " "):
-            stripped = stripped[len(upper_currency) + 1 :]
-        elif stripped.upper().startswith(upper_currency):
-            stripped = stripped[len(upper_currency) :]
-        result = Decimal(stripped)
+        cleaned = value.strip()
+
+        def strip_currency_indicators(text: str) -> str:
+            upper_currency = currency.upper()
+            if upper_currency:
+                while True:
+                    trimmed = text.lstrip()
+                    if trimmed.upper().startswith(upper_currency):
+                        text = trimmed[len(upper_currency) :]
+                        continue
+                    break
+                while True:
+                    trimmed = text.rstrip()
+                    if trimmed.upper().endswith(upper_currency):
+                        text = trimmed[: -len(upper_currency)]
+                        continue
+                    break
+                pattern = re.compile(
+                    rf"(?<![A-Za-z]){re.escape(upper_currency)}(?![A-Za-z])",
+                    flags=re.IGNORECASE,
+                )
+                text = pattern.sub(" ", text)
+            for token in _MULTI_CHAR_CURRENCY_SYMBOLS:
+                text = re.sub(re.escape(token), " ", text, flags=re.IGNORECASE)
+            if _CURRENCY_SYMBOLS:
+                text = text.translate(_CURRENCY_SYMBOL_TRANSLATION)
+            return text
+
+        cleaned = strip_currency_indicators(cleaned)
+        cleaned = cleaned.replace(",", "")
+        cleaned = cleaned.strip()
+
+        negative = False
+
+        def strip_parentheses(text: str, allow_flip: bool) -> str:
+            nonlocal negative
+            while len(text) >= 2 and text[0] == "(" and text[-1] == ")":
+                inner = text[1:-1].strip()
+                if not inner:
+                    break
+                if inner[0] in "+-":
+                    text = inner
+                    continue
+                if allow_flip:
+                    negative = True
+                text = inner
+            return text
+
+        cleaned = strip_parentheses(cleaned, allow_flip=True)
+
+        while cleaned and cleaned[0] in "+-":
+            if cleaned[0] == "-":
+                negative = not negative
+            cleaned = cleaned[1:].strip()
+            cleaned = strip_parentheses(cleaned, allow_flip=False)
+
+        while cleaned and cleaned[-1] in "+-":
+            if cleaned[-1] == "-":
+                negative = not negative
+            cleaned = cleaned[:-1].strip()
+            cleaned = strip_parentheses(cleaned, allow_flip=False)
+
+        cleaned = cleaned.strip()
+        cleaned = strip_parentheses(cleaned, allow_flip=not negative)
+        cleaned = cleaned.replace(" ", "")
+
+        if cleaned.startswith("-"):
+            if negative:
+                cleaned = cleaned[1:]
+            else:
+                negative = True
+                cleaned = cleaned[1:]
+        elif cleaned.startswith("+"):
+            cleaned = cleaned[1:]
+
+        cleaned = cleaned.strip()
+
+        if not cleaned:
+            raise ValueError("Unable to parse monetary string into Decimal.")
+
+        if negative:
+            cleaned = "-" + cleaned
+
+        result = Decimal(cleaned)
     else:
         raise TypeError(f"Unsupported monetary type: {type(value)!r}")
     return result
