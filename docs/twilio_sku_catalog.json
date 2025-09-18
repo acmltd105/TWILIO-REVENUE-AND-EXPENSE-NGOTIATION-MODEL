@@ -1,4 +1,5 @@
 {
+codex/implement-enhancements-for-twilio-dashboard
   "skus": [
     { "theme":"Messaging (Sales & Marketing)","icon":"💬","category":"Messaging","sku":"US SMS Outbound (Standard)","unit":"segment","rack_rate":0.0083,"contract_rate":0.0047,"locked":true,"source":"contract_exhibit_A" },
     { "theme":"Messaging (Sales & Marketing)","icon":"💬","category":"Messaging","sku":"US SMS Outbound (Toll-Free)","unit":"segment","rack_rate":0.0083,"contract_rate":0.0055,"locked":true,"source":"contract_exhibit_A" },
@@ -102,5 +103,88 @@
 
     /* NOTE: Keep adding blocks like these until you exceed 120 total items.
        The dashboards only require a valid JSON array; field names are consistent. */
+     
+  "generated_at": "2025-09-17T00:00:00Z",
+  "currency": "USD",
+  "skus": [
+    {
+      "id": "MSG-API-US",
+      "name": "Programmable Messaging – US",
+      "category": "Messaging",
+      "unit": "per message",
+      "list_price_usd": 0.0075,
+      "ladder": [
+        { "tier": "A", "threshold_usd": 0, "share": 0.32 },
+        { "tier": "B", "threshold_usd": 250000, "share": 0.37 },
+        { "tier": "C", "threshold_usd": 1000000, "share": 0.45 }
+      ],
+      "notes": "SMS + MMS blend, inclusive of short code routing."
+    },
+    {
+      "id": "VCX-API-GLOBAL",
+      "name": "Verify + Conversations Bundle",
+      "category": "Engagement",
+      "unit": "per active user",
+      "list_price_usd": 0.145,
+      "ladder": [
+        { "tier": "A", "threshold_usd": 0, "share": 0.32 },
+        { "tier": "B", "threshold_usd": 250000, "share": 0.37 },
+        { "tier": "C", "threshold_usd": 1000000, "share": 0.45 }
+      ],
+      "notes": "Blended verify auth + cross-channel conversation orchestration."
+    },
+    {
+      "id": "FLEX-SEAT-PRO",
+      "name": "Flex Digital Seat (Provisioned)",
+      "category": "Contact Center",
+      "unit": "per seat",
+      "list_price_usd": 145.0,
+      "ladder": [
+        { "tier": "A", "threshold_usd": 0, "share": 0.30 },
+        { "tier": "B", "threshold_usd": 500000, "share": 0.34 },
+        { "tier": "C", "threshold_usd": 1500000, "share": 0.42 }
+      ],
+      "notes": "Includes WEM, digital engagement, and real-time AI supervisor."
+    },
+    {
+      "id": "SEG-INTL-BUNDLE",
+      "name": "Segment CDP Enterprise",
+      "category": "Data & Insights",
+      "unit": "per monthly tracked user",
+      "list_price_usd": 0.95,
+      "ladder": [
+        { "tier": "A", "threshold_usd": 0, "share": 0.33 },
+        { "tier": "B", "threshold_usd": 400000, "share": 0.38 },
+        { "tier": "C", "threshold_usd": 1200000, "share": 0.46 }
+      ],
+      "notes": "Segment Personas + Unify, privacy tooling, and reverse ETL connectors."
+    },
+    {
+      "id": "EMAIL-API-M4",
+      "name": "SendGrid Email API – Growth",
+      "category": "Messaging",
+      "unit": "per thousand emails",
+      "list_price_usd": 0.25,
+      "ladder": [
+        { "tier": "A", "threshold_usd": 0, "share": 0.28 },
+        { "tier": "B", "threshold_usd": 300000, "share": 0.33 },
+        { "tier": "C", "threshold_usd": 900000, "share": 0.4 }
+      ],
+      "notes": "Includes dedicated IP warm-up, deliverability coaching, and Event Webhook."
+    },
+    {
+      "id": "AI-ASSIST-PLUS",
+      "name": "AI Assist Plus",
+      "category": "AI",
+      "unit": "per thousand interactions",
+      "list_price_usd": 2.9,
+      "ladder": [
+        { "tier": "A", "threshold_usd": 0, "share": 0.35 },
+        { "tier": "B", "threshold_usd": 350000, "share": 0.4 },
+        { "tier": "C", "threshold_usd": 1250000, "share": 0.47 }
+      ],
+      "notes": "LLM-guided assist with conversation intelligence and compliance guardrails."
+    }
+     main
   ]
 }

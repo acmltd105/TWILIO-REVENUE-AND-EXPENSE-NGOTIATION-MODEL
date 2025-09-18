@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Twilio Revenue &amp; Expense Negotiation Model</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #04060c;
+      --bg-soft: rgba(17, 24, 39, 0.72);
+      --bg-strong: rgba(9, 14, 25, 0.92);
+      --border: rgba(226, 232, 240, 0.14);
+      --text: #f4f7ff;
+      --muted: rgba(236, 240, 255, 0.72);
+      --accent: #f05a7e;
+      --accent-soft: rgba(240, 90, 126, 0.12);
+      --brand: linear-gradient(120deg, rgba(90, 155, 255, 0.32), rgba(240, 90, 126, 0.32));
+      font-family: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.6;
+      font-feature-settings: "liga" 1, "calt" 1;
+    }
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      background: radial-gradient(140% 120% at 16% 0%, rgba(90, 155, 255, 0.18), transparent 55%),
+                  radial-gradient(120% 120% at 85% 0%, rgba(240, 90, 126, 0.16), transparent 58%),
+                  linear-gradient(180deg, #05070f, #0d1526 52%, #05070f 100%);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+    .page {
+      width: min(1120px, 100%);
+      margin: 0 auto;
+      padding: clamp(20px, 4vw, 40px) clamp(16px, 4vw, 48px) 48px;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(32px, 5vw, 56px);
+    }
+    header {
+      background: rgba(9, 15, 24, 0.6);
+      border-radius: clamp(18px, 4vw, 32px);
+      border: 1px solid var(--border);
+      padding: clamp(28px, 4vw, 48px);
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+    }
+    header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 20% 10%, rgba(90, 155, 255, 0.35), transparent 58%),
+                  radial-gradient(circle at 80% 0%, rgba(240, 90, 126, 0.28), transparent 65%);
+      opacity: 0.85;
+      z-index: -2;
+    }
+    header::after {
+      content: "";
+      position: absolute;
+      inset: 12% 24% auto;
+      height: 55%;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 70%);
+      filter: blur(32px);
+      z-index: -1;
+    }
+    nav.top-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: clamp(28px, 5vw, 44px);
+      flex-wrap: wrap;
+    }
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(10, 15, 24, 0.65);
+      backdrop-filter: blur(18px);
+    }
+    .nav-cta {
+      padding: 10px 20px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 600;
+      color: #fff;
+      background: rgba(90, 155, 255, 0.22);
+      border: 1px solid rgba(154, 203, 255, 0.45);
+      transition: background 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+    }
+    .nav-cta:hover,
+    .nav-cta:focus-visible {
+      background: rgba(154, 203, 255, 0.32);
+      border-color: rgba(255, 255, 255, 0.42);
+      transform: translateY(-1px);
+      outline: none;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(8, 14, 24, 0.55);
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: rgba(244, 247, 255, 0.84);
+    }
+    header h1 {
+      margin: clamp(12px, 3vw, 20px) 0 0;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      letter-spacing: -0.035em;
+      max-width: 780px;
+    }
+    header p {
+      margin: 16px 0 0;
+      max-width: 680px;
+      font-size: clamp(1.05rem, 2.2vw, 1.25rem);
+      color: var(--muted);
+    }
+    .hero-actions {
+      margin-top: clamp(24px, 4vw, 36px);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    a.btn {
+      padding: 14px 26px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(240, 90, 126, 0.92), rgba(240, 90, 126, 0.78));
+      color: #fff;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      box-shadow: 0 16px 40px rgba(240, 90, 126, 0.32);
+    }
+    a.btn.secondary {
+      background: rgba(240, 90, 126, 0.08);
+      color: #ffb9c8;
+      border: 1px solid rgba(240, 90, 126, 0.35);
+      box-shadow: none;
+    }
+    a.btn:hover,
+    a.btn:focus-visible {
+      transform: translateY(-2px) scale(1.01);
+      box-shadow: 0 20px 48px rgba(240, 90, 126, 0.38);
+      outline: none;
+    }
+    .hero-highlights {
+      margin-top: clamp(28px, 4vw, 40px);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 18px;
+    }
+    .highlight {
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: rgba(6, 10, 19, 0.58);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(18px);
+    }
+    .highlight span {
+      display: block;
+    }
+    .highlight .label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(244, 247, 255, 0.62);
+    }
+    .highlight .value {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    .highlight p {
+      margin: 10px 0 0;
+      font-size: 0.9rem;
+      color: rgba(244, 247, 255, 0.68);
+    }
+    main {
+      display: flex;
+      flex-direction: column;
+      gap: clamp(28px, 4vw, 40px);
+    }
+    section {
+      background: rgba(7, 11, 20, 0.58);
+      border-radius: clamp(18px, 3vw, 28px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: clamp(24px, 3.5vw, 36px);
+      backdrop-filter: blur(22px) saturate(155%);
+    }
+    .section-header {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: clamp(18px, 3vw, 28px);
+    }
+    .section-header h2 {
+      margin: 0;
+      font-size: clamp(1.65rem, 3.2vw, 2.1rem);
+      letter-spacing: -0.02em;
+    }
+    .section-header p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 720px;
+    }
+    .cards {
+      display: grid;
+      gap: clamp(18px, 3vw, 28px);
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+    .card {
+      padding: clamp(20px, 2.5vw, 26px);
+      border-radius: 22px;
+      background: rgba(8, 12, 22, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.25s ease, border-color 0.25s ease;
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 0 0, rgba(240, 90, 126, 0.18), transparent 65%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+    .card:hover,
+    .card:focus-within {
+      transform: translateY(-3px);
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+    .card:hover::before,
+    .card:focus-within::before {
+      opacity: 1;
+    }
+    .card h3 {
+      margin-top: 0;
+      font-size: 1.2rem;
+    }
+    .card p {
+      color: rgba(244, 247, 255, 0.74);
+      margin-bottom: 16px;
+    }
+    .card a {
+      color: #9acbff;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .card a::after {
+      content: "→";
+      font-size: 1.1em;
+      transition: transform 0.25s ease;
+    }
+    .card a:hover::after,
+    .card a:focus-visible::after {
+      transform: translateX(3px);
+    }
+    .catalog-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-top: 24px;
+    }
+    .sku {
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(9, 14, 24, 0.62);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .sku h4 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+    .sku p {
+      margin: 4px 0;
+      color: rgba(244, 247, 255, 0.7);
+      font-size: 0.9rem;
+    }
+    footer {
+      text-align: center;
+      color: rgba(244, 247, 255, 0.62);
+      font-size: 0.85rem;
+      padding: 12px;
+    }
+    footer code {
+      color: rgba(244, 247, 255, 0.82);
+    }
+    @media (max-width: 820px) {
+      .hero-actions {
+        width: 100%;
+      }
+      a.btn,
+      a.btn.secondary {
+        flex: 1 1 220px;
+      }
+      .nav-cta {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+      }
+      nav.top-nav {
+        justify-content: center;
+      }
+    }
+    @media (max-width: 560px) {
+      header,
+      section {
+        padding: 22px;
+      }
+      header h1 {
+        font-size: clamp(2.05rem, 8vw, 2.6rem);
+      }
+      .hero-highlights {
+        grid-template-columns: 1fr;
+      }
+      .page {
+        padding: 20px clamp(14px, 5vw, 24px) 32px;
+      }
+      .highlight {
+        padding: 14px 16px;
+      }
+      nav.top-nav {
+        gap: 16px;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <nav class="top-nav">
+        <span class="logo">Twilio Negotiation Suite</span>
+        <a class="nav-cta" href="README.md" download>Download full playbook</a>
+      </nav>
+      <span class="hero-badge">Boardroom Edition · M4 Alignment</span>
+      <h1>Twilio Executive Revenue Command Center</h1>
+      <p>
+        Deliver a single, high-trust story to finance, legal, and field leaders. This package pairs
+        interactive dashboards, portfolio intelligence, and ready-to-send communications so you can
+        negotiate with confidence at every touchpoint.
+      </p>
+      <div class="hero-actions">
+        <a class="btn" href="Twilio_Exec_Dashboard_PRO.html">Launch PRO Dashboard</a>
+        <a class="btn secondary" href="Twilio_Exec_Dashboard_SHINY.html">Open SHINY View</a>
+      </div>
+      <div class="hero-highlights" role="list">
+        <div class="highlight" role="listitem">
+          <span class="label">Live decisioning</span>
+          <span class="value">Scenario-ready cockpit</span>
+          <p>Model ladder shifts and credit asks in real time with the PRO dashboard controls.</p>
+        </div>
+        <div class="highlight" role="listitem">
+          <span class="label">Executive-ready</span>
+          <span class="value">Shiny leadership brief</span>
+          <p>Condensed KPIs and trailing-90 performance snapshots sized for tablets and mobile.</p>
+        </div>
+        <div class="highlight" role="listitem">
+          <span class="label">Automation</span>
+          <span class="value">Daily invoice rollups</span>
+          <p>Drop CSVs, run the script, and sync the latest totals to dashboards and communications.</p>
+        </div>
+      </div>
+    </header>
+    <main>
+      <section aria-labelledby="dashboards">
+        <div class="section-header">
+          <h2 id="dashboards">Dashboards</h2>
+          <p>
+            Two high-fidelity dashboards model the M4 expansion path. PRO is tuned for live negotiations with
+            dynamic scenario inputs, while SHINY distills the same data for executive read-outs.
+          </p>
+        </div>
+        <div class="cards">
+          <div class="card">
+            <h3>PRO (Negotiation cockpit)</h3>
+            <p>
+              Guided inputs for cost-per-engagement storytelling, live ladder tracking, and SKU drilldowns from the catalog.
+            </p>
+            <a href="Twilio_Exec_Dashboard_PRO.html">Go to PRO</a>
+          </div>
+          <div class="card">
+            <h3>SHINY (Executive snapshot)</h3>
+            <p>
+              Optimized for tablets and quick readouts. Auto-syncs the same trailing-90 ladder logic with a condensed KPI grid.
+            </p>
+            <a href="Twilio_Exec_Dashboard_SHINY.html">Go to SHINY</a>
+          </div>
+        </div>
+      </section>
+      <section aria-labelledby="supporting-docs">
+        <div class="section-header">
+          <h2 id="supporting-docs">Supporting documents</h2>
+          <p>Download-ready collateral keeps legal, finance, and communications aligned without extra formatting.</p>
+        </div>
+        <div class="cards">
+          <div class="card">
+            <h3>Amendment v2</h3>
+            <p>Boardroom-ready markdown download including revised term, portfolio ladder, and credit treatment.</p>
+            <a href="contracts/amendment_v2.md" download>Download amendment</a>
+          </div>
+          <div class="card">
+            <h3>Final email</h3>
+            <p>Paste-ready narrative with space to drop your live GitHub Pages URL for immediate executive review.</p>
+            <a href="email_final.txt" download>Download email body</a>
+          </div>
+          <div class="card">
+            <h3>Playbook</h3>
+            <p>Usage notes, pre-flight checks, and testing protocol for demos or distribution.</p>
+            <a href="README.md" download>View README</a>
+          </div>
+        </div>
+      </section>
+      <section aria-labelledby="automation">
+        <div class="section-header">
+          <h2 id="automation">Automation + tooling</h2>
+          <p>
+            Keep finance telemetry current with a lightweight automation stack. Refresh the trailing-90 total and
+            broadcast updates via GitHub Actions or Slack with a single workflow.
+          </p>
+        </div>
+        <div class="cards">
+          <div class="card">
+            <h3>Trailing-90 rollup</h3>
+            <p>Python utility produces <code>invoices/trailing_90_usd.txt</code> with the rolling sum and prints the value.</p>
+            <a href="../invoice_rollup.py">View script</a>
+          </div>
+          <div class="card">
+            <h3>GitHub Actions</h3>
+            <p>Continuous deployment for GitHub Pages plus Slack tier notifications (enable by adding the webhook secret).</p>
+            <a href="../.github/workflows/pages.yml">View workflows</a>
+          </div>
+        </div>
+      </section>
+      <section aria-labelledby="catalog">
+        <div class="section-header">
+          <h2 id="catalog">Catalog preview</h2>
+          <p>
+            The live dashboard hydrates directly from the SKU catalog to keep pricing aligned with M4 assumptions.
+            Key SKUs are surfaced here for quick reference; open the dashboard for the full list and calculations.
+          </p>
+        </div>
+        <div id="catalog-list" class="catalog-list" role="list"></div>
+      </section>
+    </main>
+    <footer>
+      Built for the M4 negotiation package • Twilio partnership desk • Updated automatically on every push to <code>main</code>
+    </footer>
+  </div>
+  <script>
+    async function loadCatalog() {
+      const container = document.getElementById("catalog-list");
+      try {
+        const response = await fetch("twilio_sku_catalog.json", { cache: "no-store" });
+        if (!response.ok) throw new Error(`Request failed: ${response.status}`);
+        const catalog = await response.json();
+        const featured = catalog.skus.slice(0, 6);
+        featured.forEach((sku) => {
+          const article = document.createElement("article");
+          article.className = "sku";
+          article.innerHTML = `
+            <h4>${sku.name}</h4>
+            <p><strong>SKU:</strong> ${sku.id}</p>
+            <p><strong>Category:</strong> ${sku.category}</p>
+            <p><strong>List:</strong> $${sku.list_price_usd.toFixed(4)} ${sku.unit}</p>
+            <p><strong>Tier Ladder:</strong> ${sku.ladder.map(l => `${l.tier}→${(l.share * 100).toFixed(0)}%`).join(" · ")}</p>
+          `;
+          container.appendChild(article);
+        });
+      } catch (error) {
+        const message = document.createElement("p");
+        message.style.color = "#ff9ba6";
+        message.textContent = `Unable to load SKU catalog: ${error.message}`;
+        document.getElementById("catalog-list").replaceWith(message);
+        console.error("Catalog load failed", error);
+      }
+    }
+    loadCatalog();
+  </script>
+</body>
+</html>

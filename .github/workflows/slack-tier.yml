@@ -1,0 +1,20 @@
+name: Twilio Tier Notifier
+on:
+  schedule: [{ cron: "0 13 * * *" }]  # 13:00 UTC daily
+  workflow_dispatch:
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Post tier to Slack
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          sudo apt-get update -y && sudo apt-get install -y jq bc || true
+          T90=$(cat invoices/trailing_90_usd.txt 2>/dev/null || echo "0.00")
+          tier="A"; if (( $(echo "$T90 > 250000" | bc -l) )); then tier="B"; fi
+          if (( $(echo "$T90 > 1000000" | bc -l) )); then tier="C"; fi
+          payload=$(jq -n --arg t90 "$T90" --arg tier "$tier" \
+            '{text: ("Twilio trailing-90: $" + $t90 + " → active tier: " + $tier)}')
+          curl -s -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL"
