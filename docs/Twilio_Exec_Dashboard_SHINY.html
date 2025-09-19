@@ -1,6 +1,271 @@
+codex/add-files-for-github-pages-setup-inejvj
+codex/add-files-for-github-pages-setup
+main
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Twilio — SHINY Dashboard</title></head><body>
 <h1>Twilio — SHINY Dashboard</h1>
 <p>Alternate build for exec demos. Loads the same <code>twilio_sku_catalog.json</code>.</p>
 <script>(async()=>{const r=await fetch('./twilio_sku_catalog.json');const d=await r.json();console.log('SHINY SKUs:',d.skus.length)})()</script>
 </body></html>
+codex/add-files-for-github-pages-setup-inejvj
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Twilio Executive Dashboard · SHINY</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #06070c;
+      --glass: rgba(255, 255, 255, 0.08);
+      --text: #f0f4ff;
+      --muted: rgba(240, 244, 255, 0.72);
+      font-family: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(145deg, #06070c 0%, #131829 60%, #06070c 100%);
+      color: var(--text);
+      padding: 32px clamp(16px, 4vw, 64px) 48px;
+    }
+    header {
+      text-align: center;
+    }
+    header h1 {
+      margin-bottom: 12px;
+      font-size: clamp(2.4rem, 4vw, 3.4rem);
+    }
+    header p {
+      margin: 0 auto;
+      max-width: 620px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .grid {
+      display: grid;
+      margin-top: 36px;
+      gap: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+    .card {
+      background: var(--glass);
+      border-radius: 24px;
+      padding: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(26px) saturate(170%);
+      position: relative;
+      overflow: hidden;
+    }
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top, rgba(255, 255, 255, 0.12), transparent 65%);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+    .card h2 {
+      margin: 0 0 12px;
+      font-size: 1.4rem;
+    }
+    .kpi-grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    }
+    .kpi {
+      padding: 16px;
+      border-radius: 16px;
+      background: rgba(6, 10, 20, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .kpi span {
+      display: block;
+    }
+    .kpi .label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(240, 244, 255, 0.6);
+    }
+    .kpi .value {
+      margin-top: 6px;
+      font-size: 1.4rem;
+      font-weight: 600;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      font-size: 0.95rem;
+    }
+    th, td {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: left;
+    }
+    .cta {
+      margin-top: 32px;
+      text-align: center;
+    }
+    .cta a {
+      color: #9acbff;
+      font-weight: 600;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Twilio Executive Snapshot</h1>
+    <p>
+      Daily readout for executive and finance audiences. Metrics are locked to current assumptions and re-render from the shared SKU catalog
+      so the live site mirrors what you reviewed with the board.
+    </p>
+  </header>
+
+  <div class="grid">
+    <section class="card" aria-labelledby="summary">
+      <h2 id="summary">Current M4 posture</h2>
+      <div class="kpi-grid">
+        <div class="kpi">
+          <span class="label">Active ladder tier</span>
+          <span class="value" id="tier">Tier A</span>
+        </div>
+        <div class="kpi">
+          <span class="label">Trailing-90 revenue</span>
+          <span class="value" id="trailing">$0</span>
+        </div>
+        <div class="kpi">
+          <span class="label">Twilio portfolio share</span>
+          <span class="value" id="share">32%</span>
+        </div>
+        <div class="kpi">
+          <span class="label">Projected Twilio revenue</span>
+          <span class="value" id="twilio-revenue">$0</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="funnel">
+      <h2 id="funnel">Funnel snapshot</h2>
+      <div class="kpi-grid">
+        <div class="kpi">
+          <span class="label">Leads / month</span>
+          <span class="value" id="leads">0</span>
+        </div>
+        <div class="kpi">
+          <span class="label">Engagement rate</span>
+          <span class="value" id="engagement">0%</span>
+        </div>
+        <div class="kpi">
+          <span class="label">Conversion rate</span>
+          <span class="value" id="conversion">0%</span>
+        </div>
+        <div class="kpi">
+          <span class="label">Revenue / sale</span>
+          <span class="value" id="rev-sale">$0</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="sku-table">
+      <h2 id="sku-table">SKU focus</h2>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">SKU</th>
+            <th scope="col">Description</th>
+            <th scope="col">List price</th>
+          </tr>
+        </thead>
+        <tbody id="sku-body"></tbody>
+      </table>
+    </section>
+  </div>
+
+  <div class="cta">
+    <a href="Twilio_Exec_Dashboard_PRO.html">Need to model scenarios? Jump into the PRO cockpit →</a>
+  </div>
+
+  <script>
+    const defaultScenario = {
+      leads: 420,
+      engagement: 0.48,
+      conversion: 0.18,
+      revenuePerSale: 38000,
+      trailing: 240000
+    };
+
+    const ladder = [
+      { tier: "A", threshold: 0, share: 0.32 },
+      { tier: "B", threshold: 250000, share: 0.37 },
+      { tier: "C", threshold: 1000000, share: 0.45 }
+    ];
+
+    function computeTier(trailing) {
+      let selected = ladder[0];
+      for (const step of ladder) {
+        if (trailing >= step.threshold) {
+          selected = step;
+        }
+      }
+      return selected;
+    }
+
+    function formatCurrency(value) {
+      return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(value);
+    }
+
+    function hydrateSummary() {
+      const tier = computeTier(defaultScenario.trailing);
+      const engaged = defaultScenario.leads * defaultScenario.engagement;
+      const conversions = engaged * defaultScenario.conversion;
+      const twilioRevenue = conversions * defaultScenario.revenuePerSale * tier.share;
+
+      document.getElementById("tier").textContent = `Tier ${tier.tier}`;
+      document.getElementById("trailing").textContent = formatCurrency(defaultScenario.trailing);
+      document.getElementById("share").textContent = `${Math.round(tier.share * 100)}%`;
+      document.getElementById("twilio-revenue").textContent = formatCurrency(twilioRevenue);
+
+      document.getElementById("leads").textContent = defaultScenario.leads.toLocaleString();
+      document.getElementById("engagement").textContent = `${Math.round(defaultScenario.engagement * 100)}%`;
+      document.getElementById("conversion").textContent = `${Math.round(defaultScenario.conversion * 100)}%`;
+      document.getElementById("rev-sale").textContent = formatCurrency(defaultScenario.revenuePerSale);
+    }
+
+    async function loadSkus() {
+      try {
+        const response = await fetch("twilio_sku_catalog.json", { cache: "no-store" });
+        if (!response.ok) throw new Error(`Request failed: ${response.status}`);
+        const catalog = await response.json();
+        const tbody = document.getElementById("sku-body");
+        tbody.innerHTML = "";
+        catalog.skus.slice(0, 6).forEach((sku) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${sku.id}</td>
+            <td>${sku.name}</td>
+            <td>$${sku.list_price_usd.toFixed(4)} ${sku.unit}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      } catch (error) {
+        const tbody = document.getElementById("sku-body");
+        const row = document.createElement("tr");
+        row.innerHTML = `<td colspan="3" style="color:#ff9ba6;">Unable to load SKU catalog: ${error.message}</td>`;
+        tbody.appendChild(row);
+        console.error("Failed to load catalog", error);
+      }
+    }
+
+    hydrateSummary();
+    loadSkus();
+  </script>
+</body>
+</html>
+main
+ main
