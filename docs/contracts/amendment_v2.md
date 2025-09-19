@@ -1,4 +1,7 @@
+codex/add-files-for-github-pages-setup-inejvj
+
 codex/add-files-for-github-pages-setup
+main
 # Amendment v2 — Start Date, Credits, Discount Ladder, and Term
 
 **Order Form Start Date.** The parties agree the Order Form Start Date is amended to **September 15, 2025**. Minimum Spend obligations commence on this date. All other terms remain unchanged.
@@ -13,6 +16,8 @@ codex/add-files-for-github-pages-setup
 This ladder applies to all Twilio services used by Customer including Messaging, Voice, Verify, AI, Numbers, Lookup, Conversations, Flex, SendGrid, Segment, Studio, Functions, SIP, and compliance services.
 
 **Term.** The parties agree to a new contract term of **two (2) years** commencing September 15, 2025.
+codex/add-files-for-github-pages-setup-inejvj
+=======
 =======
 # Twilio Commercial Amendment v2
 
@@ -61,4 +66,5 @@ This ladder applies to all Twilio services used by Customer including Messaging,
 | Name: _________________________ | Name: _________________________ |
 | Title: _________________________ | Title: _________________________ |
 | Date: _________________________ | Date: _________________________ |
+main
 main
