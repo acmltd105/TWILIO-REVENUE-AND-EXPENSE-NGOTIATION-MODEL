@@ -71,6 +71,17 @@ MAX_MARGIN = Decimal("0.99")
 PERCENT_QUANT = Decimal("0.0001")
 
 
+def _canonicalise_currency(value: Optional[str]) -> Optional[str]:
+    """Normalise a currency code to a canonical uppercase representation."""
+
+    if value is None:
+        return None
+    text = str(value).strip()
+    if not text:
+        return None
+    return text.upper()
+
+
 @dataclass(frozen=True)
 class StreamTotals:
     """Aggregated totals for a revenue or expense collection."""
@@ -325,7 +336,8 @@ def _normalise_streams(
     total = Decimal("0")
     list_total = Decimal("0")
     breakdown: List[Mapping[str, Any]] = []
-    resolved_currency = currency_hint
+    canonical_currency_hint = _canonicalise_currency(currency_hint)
+    resolved_currency = canonical_currency_hint
 
     for index, item in enumerate(iterable):
         name, amount, list_amount, item_currency = _normalise_stream_item(
@@ -351,7 +363,7 @@ def _normalise_streams(
         )
 
     if resolved_currency is None:
-        resolved_currency = currency_hint or "USD"
+        resolved_currency = canonical_currency_hint or "USD"
 
     if list_hint is not None:
         list_total = _to_decimal_money(list_hint, resolved_currency)
@@ -382,18 +394,25 @@ def _normalise_stream_item(
     *,
     default_name: str,
 ) -> Tuple[str, Decimal, Decimal, str]:
+    canonical_hint = _canonicalise_currency(currency_hint)
+
     if isinstance(item, StreamTotals):
+        item_currency = (
+            _canonicalise_currency(item.currency)
+            or canonical_hint
+            or "USD"
+        )
         return (
             default_name,
             Decimal(item.total),
             Decimal(item.list_total),
-            item.currency,
+            item_currency,
         )
 
     if hasattr(item, "__dict__") and not isinstance(item, Mapping):
         return _normalise_stream_item(
             {key: value for key, value in vars(item).items() if not key.startswith("_")},
-            currency_hint,
+            canonical_hint,
             default_name=default_name,
         )
 
@@ -407,7 +426,11 @@ def _normalise_stream_item(
             or default_name
         )
         currency_value = mapping_item.get("currency")
-        currency = str(currency_value) if currency_value else (currency_hint or "USD")
+        currency = (
+            _canonicalise_currency(currency_value)
+            or canonical_hint
+            or "USD"
+        )
         volume = _to_decimal_number(
             mapping_item.get("volume")
             or mapping_item.get("units")
@@ -462,6 +485,7 @@ def _normalise_stream_item(
         seq = list(item)
         if not seq:
             raise ValueError("Empty stream entry is not allowed.")
+        sequence_currency = canonical_hint or "USD"
         if len(seq) == 3:
             maybe_name, maybe_price, maybe_volume = seq
             if isinstance(maybe_name, str):
@@ -478,8 +502,8 @@ def _normalise_stream_item(
                 name = first
                 price = second
                 volume = 1
-                amount_decimal = _to_decimal_money(price, currency_hint or "USD")
-                return name, amount_decimal, amount_decimal, currency_hint or "USD"
+                amount_decimal = _to_decimal_money(price, sequence_currency)
+                return name, amount_decimal, amount_decimal, sequence_currency
             else:
                 name = default_name
                 price = first
@@ -492,19 +516,20 @@ def _normalise_stream_item(
             raise ValueError(
                 "Sequence stream entries must contain between one and three values."
             )
-        price_decimal = _to_decimal_money(price, currency_hint or "USD")
+        price_decimal = _to_decimal_money(price, sequence_currency)
         volume_decimal = _to_decimal_number(volume, default=1)
         amount_decimal = price_decimal * volume_decimal
-        return name, amount_decimal, amount_decimal, currency_hint or "USD"
+        return name, amount_decimal, amount_decimal, sequence_currency
 
     try:
-        amount_decimal = _to_decimal_money(item, currency_hint or "USD")
+        amount_decimal = _to_decimal_money(item, canonical_hint or "USD")
     except (TypeError, ValueError):
         raise TypeError(
             "Unsupported stream item type; expected mapping, sequence, or numeric value."
         ) from None
 
-    return default_name, amount_decimal, amount_decimal, currency_hint or "USD"
+    final_currency = canonical_hint or "USD"
+    return default_name, amount_decimal, amount_decimal, final_currency
 
 
 def _ensure_iterable(value: StreamLike) -> List[Any]:
