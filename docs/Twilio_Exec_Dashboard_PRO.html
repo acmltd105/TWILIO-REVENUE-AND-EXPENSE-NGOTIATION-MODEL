@@ -1,50 +1,3 @@
-codex/add-files-for-github-pages-setup-inejvj
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Twilio — PRO Dashboard</title>
-<style>body{font:16px/1.6 Inter,system-ui,Segoe UI,Roboto,Arial;margin:0;padding:24px;color:#0b0f1d}
-h1{margin:0 0 12px} .row{display:flex;gap:12px;flex-wrap:wrap} .card{border:1px solid #e3e8ef;padding:12px;border-radius:10px}
-label{display:block;font-size:12px;color:#475569;margin:6px 0 2px} input{padding:8px;border:1px solid #cbd5e1;border-radius:8px}</style>
-</head><body>
-<h1>Twilio — PRO Dashboard</h1>
-<div class="row">
-  <div class="card"><label>Start date</label>
-    <label><input type="radio" name="start" value="sep1" checked> Sep 1</label>
-    <label><input type="radio" name="start" value="sep15"> Sep 15</label>
-  </div>
-  <div class="card"><label>Trailing-90 spend (USD)</label><input id="t90" type="number" value="0"></div>
-  <div class="card"><label>Ask ladder (%)</label>
-    <div class="row">
-      <div><label>Tier A</label><input id="askA" type="number" value="32"></div>
-      <div><label>Tier B</label><input id="askB" type="number" value="37"></div>
-      <div><label>Tier C</label><input id="askC" type="number" value="45"></div>
-    </div>
-  </div>
-</div>
-<div class="row">
-  <div class="card">
-    <label>Leads/mo</label><input id="leads" type="number" value="1000000">
-    <label>Engagement %</label><input id="eng" type="number" value="19">
-    <label>Conversion %</label><input id="conv" type="number" value="1.0">
-    <label>Revenue / sale ($)</label><input id="rev" type="number" value="120">
-  </div>
-  <div class="card"><div id="kpis"></div></div>
-</div>
-<div class="card"><pre id="log">Loading catalog…</pre></div>
-<script>
-async function load(){const res=await fetch('./twilio_sku_catalog.json',{cache:'no-store'}); const data=await res.json(); window.CATALOG=data; recalc();}
-function tierDisc(t90){const A=+askA.value/100,B=+askB.value/100,C=+askC.value/100; if(t90>1_000_000) return C; if(t90>250_000) return B; return A;}
-function recalc(){
-  const t90=+document.getElementById('t90').value||0; const disc=tierDisc(t90);
-  const leads=+leads.value, eng=+eng.value/100, conv=+conv.value/100, rev=+rev.value;
-  const engaged=leads*eng, converted=leads*conv;
-  const msgs=leads*1.0; const rackRate=0.0083; const spend=rackRate*msgs*(1-disc);
-  const cpe= engaged? spend/engaged:0, cpc= converted? spend/converted:0, gm= rev-cpc;
-  kpis.innerHTML = `Tier: <b>${(disc*100).toFixed(0)}%</b> | CPE: <b>$${cpe.toFixed(2)}</b> | CPC: <b>$${cpc.toFixed(2)}</b> | GM/sale: <b>$${gm.toFixed(2)}</b>`;
-  log.textContent = `Catalog SKUs: ${CATALOG?.skus?.length||'—'}\nStart: ${document.querySelector('input[name="start"]:checked').value}\nTrailing-90: $${t90.toLocaleString()}`;
-}
-addEventListener('input', recalc); addEventListener('change', recalc); load();
-</script></body></html>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -53,64 +6,208 @@ addEventListener('input', recalc); addEventListener('change', recalc); load();
 <title>Executive Negotiation Dashboard — PRO</title>
 <style>
   :root{
-    --bg:#0e1020; --ink:#eaf2ff; --muted:#a9bbdf; --card:#121737; --line:#26305a;
-    --brand:#76e4ff; --accent:#71ffd9; --hot:#ff7adf; --good:#4fe08a; --warn:#ffd169;
-    --chip:#14204a; --chipb:#394e8d; --danger:#ff97a0;
+    --bg:#f4f8ff;
+    --ink:#101736;
+    --muted:#5b6a8a;
+    --card:rgba(255,255,255,0.82);
+    --line:rgba(172,194,233,0.65);
+    --brand:#1d4ed8;
+    --accent:#38bdf8;
+    --hot:#dc2626;
+    --good:#0f9d58;
+    --warn:#f59e0b;
+    --chip:rgba(255,255,255,0.75);
+    --chipb:rgba(29,78,216,0.25);
+    --danger:#b91c1c;
+    --shadow:0 30px 60px rgba(58,95,184,0.25);
   }
   *{box-sizing:border-box}
-  html,body{margin:0;background:radial-gradient(1200px 600px at 10% -5%, #1b2650 5%, var(--bg) 60%) fixed;color:var(--ink);
-    font:15px/1.6 Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;}
-  a{color:inherit}
+  html,body{
+    margin:0;
+    min-height:100vh;
+    background:linear-gradient(180deg,#ffffff 0%, var(--bg) 60%, #dfe9ff 100%);
+    color:var(--ink);
+    font:15px/1.6 "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  }
+  a{color:var(--brand)}
   .wrap{max-width:1280px;margin:28px auto;padding:0 16px}
-  .hero{position:sticky;top:0;z-index:20;border:1px solid #20305b;background:linear-gradient(135deg,#0e1734,#111b3c);border-radius:18px;padding:16px 16px 12px;
-    box-shadow:0 12px 40px rgba(8,16,48,0.35);backdrop-filter:blur(4px)}
-  .hero h1{margin:0 0 4px;font-size:26px;letter-spacing:.2px}
+  .hero{
+    position:sticky;
+    top:0;
+    z-index:20;
+    border:1px solid rgba(37,99,235,0.2);
+    background:linear-gradient(145deg,rgba(255,255,255,0.92),rgba(226,239,255,0.88));
+    border-radius:22px;
+    padding:20px 20px 16px;
+    box-shadow:var(--shadow);
+    backdrop-filter:blur(16px);
+  }
+  .hero-head{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
+  .brand-logos{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .brand-card{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:12px 18px;
+    border-radius:16px;
+    background:rgba(255,255,255,0.95);
+    border:1px solid rgba(37,99,235,0.18);
+    box-shadow:0 18px 32px rgba(59,130,246,0.18);
+    backdrop-filter:blur(18px);
+    min-width:148px;
+  }
+  .brand-card svg{width:120px;height:auto;display:block}
+  .brand-card.twilio{background:linear-gradient(135deg,rgba(255,255,255,0.96),rgba(255,241,242,0.92));border-color:rgba(239,68,68,0.25)}
+  .brand-card.dpc{background:linear-gradient(135deg,rgba(255,255,255,0.96),rgba(219,234,254,0.92))}
+  .brand-and{font-weight:800;font-size:18px;color:var(--muted)}
+  .hero-text{flex:1 1 280px;min-width:240px}
+  .hero h1{margin:0 0 6px;font-size:28px;letter-spacing:.2px}
   .muted{color:var(--muted)}
-  .cta-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:8px}
-  .btn{appearance:none;border:1px solid #2f3e73;background:#16224a;color:#eaf2ff;padding:9px 12px;border-radius:12px;
-    font-weight:800;letter-spacing:.2px;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,.25)}
-  .btn:hover{transform:translateY(-1px);border-color:#4860c6}
-  .btn.brand{background:linear-gradient(135deg,var(--accent),var(--brand));color:#051029;border:0}
-  .pill{display:inline-block;padding:3px 10px;border-radius:999px;background:var(--chip);border:1px solid var(--chipb);color:#bfe4ff;font-weight:800;font-size:11px}
-  .tabs{display:flex;gap:8px;margin:14px 0 12px;flex-wrap:wrap}
-  .tabbtn{background:#101939;border:1px solid #23356c;color:#cfe0ff;padding:8px 12px;border-radius:12px;font-weight:800;cursor:pointer}
-  .tabbtn.active{background:linear-gradient(135deg,var(--accent),var(--brand));color:#071026;border-color:transparent}
+  .cta-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:16px}
+  .btn{
+    appearance:none;
+    border:1px solid rgba(37,99,235,0.35);
+    background:linear-gradient(135deg,rgba(226,239,255,0.9),rgba(190,227,248,0.9));
+    color:var(--ink);
+    padding:9px 14px;
+    border-radius:14px;
+    font-weight:700;
+    letter-spacing:.2px;
+    cursor:pointer;
+    box-shadow:0 12px 28px rgba(148,184,255,0.35);
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:hover{transform:translateY(-1px);box-shadow:0 16px 30px rgba(148,184,255,0.45)}
+  .btn.brand{
+    background:linear-gradient(135deg,var(--accent),var(--brand));
+    color:#f7fbff;
+    border:0;
+    box-shadow:0 15px 32px rgba(30,64,175,0.4);
+  }
+  .pill{
+    display:inline-block;
+    padding:4px 12px;
+    border-radius:999px;
+    background:var(--chip);
+    border:1px solid var(--chipb);
+    color:var(--brand);
+    font-weight:700;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+  }
+  .tabs{display:flex;gap:8px;margin:18px 0 14px;flex-wrap:wrap}
+  .tabbtn{
+    background:rgba(255,255,255,0.9);
+    border:1px solid rgba(37,99,235,0.25);
+    color:var(--ink);
+    padding:8px 14px;
+    border-radius:14px;
+    font-weight:700;
+    cursor:pointer;
+    box-shadow:0 12px 24px rgba(59,130,246,0.12);
+  }
+  .tabbtn.active{
+    background:linear-gradient(135deg,var(--accent),var(--brand));
+    color:#f8fbff;
+    border-color:transparent;
+    box-shadow:0 14px 28px rgba(30,64,175,0.3);
+  }
   .grid{display:grid;gap:12px}
-  .card{background:rgba(16,25,57,.88);border:1px solid #243158;border-radius:16px;padding:14px;box-shadow:0 10px 30px rgba(8,16,48,.25)}
-  h2{margin:0 0 8px;font-size:18px;color:#bfe4ff}
-  h3{margin:14px 0 8px;font-size:15px;color:#cfe0ff}
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:18px;
+    box-shadow:var(--shadow);
+    backdrop-filter:blur(18px);
+  }
+  h2{margin:0 0 10px;font-size:18px;color:var(--brand)}
+  h3{margin:18px 0 10px;font-size:15px;color:#1f2a46}
   label{font-size:12px;color:var(--muted);font-weight:700;display:block;margin-bottom:4px}
-  input[type="number"],select{width:100%;padding:8px 10px;border-radius:10px;border:1px solid #33497d;background:#0e1734;color:var(--ink);
-    font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace}
-  .inputs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
-  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:8px}
-  .kpi{background:linear-gradient(180deg,#0f1838,#10193b);border:1px solid #2a3a6e;border-radius:14px;padding:10px}
-  .kpi .lbl{color:var(--muted);font-size:12px}
-  .kpi .val{font-weight:900;font-size:22px;margin-top:2px}
+  input[type="number"],select{
+    width:100%;
+    padding:10px 12px;
+    border-radius:12px;
+    border:1px solid rgba(148,163,184,0.5);
+    background:rgba(255,255,255,0.85);
+    color:var(--ink);
+    font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    box-shadow:0 12px 20px rgba(148,184,255,0.18);
+  }
+  input[type="number"]:focus,select:focus{outline:2px solid rgba(56,189,248,0.6);outline-offset:2px}
+  .inputs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:12px}
+  .kpi{
+    background:linear-gradient(160deg,rgba(244,249,255,0.92),rgba(219,234,254,0.88));
+    border:1px solid rgba(59,130,246,0.22);
+    border-radius:16px;
+    padding:12px 14px;
+    box-shadow:0 16px 28px rgba(148,184,255,0.28);
+  }
+  .kpi .lbl{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.4px}
+  .kpi .val{font-weight:800;font-size:22px;margin-top:6px;color:var(--ink)}
   .ok{color:var(--good);font-weight:900}
   .hot{color:var(--hot);font-weight:900}
   .warn{color:var(--warn);font-weight:900}
-  .green{background:rgba(79,224,138,.12)}
-  table{width:100%;border-collapse:collapse;margin-top:8px}
-  th,td{border-bottom:1px dashed #2c3a6b;padding:8px;text-align:left}
-  th{color:#bfe4ff;background:#0f1838;border-bottom:1px solid #40539a;position:sticky;top:0;z-index:1}
+  .green{background:rgba(15,157,88,0.1)}
+  table{width:100%;border-collapse:collapse;margin-top:12px;background:rgba(255,255,255,0.96);border-radius:14px;overflow:hidden;box-shadow:0 16px 30px rgba(148,184,255,0.25)}
+  th,td{border-bottom:1px solid rgba(209,223,255,0.7);padding:10px;text-align:left}
+  th{color:var(--ink);background:rgba(226,239,255,0.96);border-bottom:1px solid rgba(148,184,255,0.55);position:sticky;top:0;z-index:1}
   td.number{text-align:right;font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace}
   .right{text-align:right}
   .hide{display:none}
-  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-  .meter{height:10px;border-radius:8px;background:#1a2449;overflow:hidden;border:1px solid #2b3a6e}
+  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  .meter{height:12px;border-radius:999px;background:rgba(191,219,254,0.8);overflow:hidden;border:1px solid rgba(37,99,235,0.25)}
   .meter>div{height:100%;background:linear-gradient(90deg,var(--accent),var(--brand))}
   .svg{width:100%;height:56px}
   .note{font-size:12px;color:var(--muted)}
   .danger{color:var(--danger)}
+  @media (max-width:720px){
+    .hero{padding:18px 16px}
+    .brand-card{min-width:120px}
+    .btn{width:100%;justify-content:center}
+    .tabs{justify-content:flex-start}
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
 
   <section class="hero">
-    <h1>Executive Negotiation Dashboard — PRO</h1>
-    <div class="muted">Start-date alignment • Portfolio discounts • Cost-per-client • 24-month upside</div>
+    <div class="hero-head">
+      <div class="brand-logos" aria-label="DPCyeah.com and Twilio partnership">
+        <div class="brand-card dpc" role="img" aria-label="DPCyeah.com logo">
+          <svg viewBox="0 0 160 48" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="dpcGradient" x1="0%" x2="100%" y1="0%" y2="100%">
+                <stop offset="0%" stop-color="#38bdf8"/>
+                <stop offset="100%" stop-color="#1d4ed8"/>
+              </linearGradient>
+            </defs>
+            <rect x="2" y="2" width="156" height="44" rx="14" fill="url(#dpcGradient)" opacity="0.12"/>
+            <text x="24" y="30" font-family="'Inter', 'Segoe UI', sans-serif" font-weight="800" font-size="22" fill="#1d4ed8">DPC</text>
+            <text x="78" y="30" font-family="'Inter', 'Segoe UI', sans-serif" font-weight="600" font-size="18" fill="#0f172a">yeah</text>
+            <text x="124" y="30" font-family="'Inter', 'Segoe UI', sans-serif" font-weight="600" font-size="14" fill="#0f172a">.com</text>
+          </svg>
+        </div>
+        <span class="brand-and" aria-hidden="true">×</span>
+        <div class="brand-card twilio" role="img" aria-label="Twilio logo">
+          <svg viewBox="0 0 160 48" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="24" cy="24" r="18" fill="#fef2f2" stroke="#ef4444" stroke-width="4"/>
+            <circle cx="16" cy="18" r="4" fill="#ef4444"/>
+            <circle cx="32" cy="18" r="4" fill="#ef4444"/>
+            <circle cx="16" cy="30" r="4" fill="#ef4444"/>
+            <circle cx="32" cy="30" r="4" fill="#ef4444"/>
+            <text x="56" y="30" font-family="'Inter', 'Segoe UI', sans-serif" font-weight="700" font-size="22" fill="#ef4444">twilio</text>
+          </svg>
+        </div>
+      </div>
+      <div class="hero-text">
+        <h1>Executive Negotiation Dashboard — PRO</h1>
+        <div class="muted">Start-date alignment • Portfolio discounts • Cost-per-client • 24-month upside</div>
+      </div>
+    </div>
     <div class="cta-bar">
       <button class="btn brand" onclick="scrollToDash()">▶ Open Live Model</button>
       <button class="btn" onclick="downloadCSV()">Export CSV (state)</button>
@@ -469,5 +566,3 @@ addEventListener('input', recalc); addEventListener('change', recalc); load();
 </script>
 </body>
 </html>
-
-main
