@@ -1,2 +1,6 @@
 __pycache__/
 *.pyc
+node_modules/
+.pytest_cache/
+twilio_negotiation.egg-info/
+data/scenario_cache.json

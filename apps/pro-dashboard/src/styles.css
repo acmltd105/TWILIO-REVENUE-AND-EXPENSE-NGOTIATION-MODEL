@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  min-height: 100vh;
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/70 backdrop-blur-md border border-white/60 shadow-glass rounded-3xl;
+  }
+
+  .glass-panel {
+    @apply bg-white/60 backdrop-blur-lg border border-white/50 rounded-2xl shadow-lg;
+  }
+
+  .hero-gradient {
+    background: radial-gradient(circle at 20% -10%, rgba(9, 179, 251, 0.5), transparent 55%),
+      radial-gradient(circle at 80% 0%, rgba(58, 247, 184, 0.55), transparent 50%),
+      linear-gradient(160deg, rgba(6, 19, 40, 0.95), rgba(12, 34, 68, 0.88));
+  }
+
+  .logo-orb {
+    background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.9), transparent 65%),
+      radial-gradient(circle at 70% 80%, rgba(9, 179, 251, 0.65), transparent 70%),
+      radial-gradient(circle at 45% 60%, rgba(58, 247, 184, 0.4), transparent 70%);
+    box-shadow: 0 20px 40px rgba(9, 179, 251, 0.35);
+  }
+}
