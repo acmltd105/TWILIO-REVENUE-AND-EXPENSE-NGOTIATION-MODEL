@@ -46,10 +46,10 @@ export const Hero = ({ trailing90, skuCount, activeTier, discount, mode, error, 
           </LogoOrb>
         </div>
         <div className="max-w-3xl space-y-4">
-          <h1 className="text-4xl font-black tracking-tight">Executive Negotiation Dashboard — PRO</h1>
+          <h1 className="text-4xl font-black tracking-tight">Predictability &amp; Modeling Command — PRO</h1>
           <p className="text-lg text-white/80">
-            Ground the portfolio conversation in 120 verified Twilio SKUs, live trailing spend, and an automated negotiation envelope.
-            Start with the Fortune-grade blue / green liquid glass aesthetic and flex between Supabase or local persistence automatically.
+            Anchor forecasts in 120 verified Twilio SKUs, live trailing spend, and continuously evaluated automation guardrails.
+            Liquid glass UI keeps executive polish while Supabase and local persistence fail over automatically.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-4 text-sm font-semibold text-white/80">
@@ -76,7 +76,7 @@ export const Hero = ({ trailing90, skuCount, activeTier, discount, mode, error, 
         <h2 className="text-lg font-bold uppercase tracking-[0.3em] text-ocean">Enforcement</h2>
         <ul className="space-y-3 text-sm text-ocean/80">
           <li>• Automatic 120-SKU validation before render.</li>
-          <li>• Negotiation API fallback protects executive demos.</li>
+          <li>• Predictability service fallback protects executive demos.</li>
           <li>• Supabase scenario persistence with local failover.</li>
           <li>• Animated DPCyeah &amp; Twilio marks maintain on-brand polish.</li>
         </ul>
