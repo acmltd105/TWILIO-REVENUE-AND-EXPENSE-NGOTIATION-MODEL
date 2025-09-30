@@ -52,6 +52,30 @@ def test_calculate_envelope_with_stream_breakdown():
     assert len(envelope["audit_trail"]["breakdown"]["expense"]) == 2
 
 
+def test_calculate_envelope_with_mixed_currency_casing():
+    revenue_streams = [
+        {"name": "alpha", "currency": "usd", "unit_price": "1.00", "volume": 10},
+        {"name": "beta", "currency": "USD", "unit_price": "2.00", "volume": 5},
+    ]
+    expense_streams = [
+        {"name": "alpha_cost", "currency": "Usd", "unit_cost": "0.40", "volume": 10},
+        {"name": "beta_cost", "currency": "USD", "unit_cost": "0.80", "volume": 5},
+    ]
+
+    envelope = calculate_negotiation_envelope(
+        revenue_streams,
+        expense_streams,
+        target_margin="30%",
+        currency="usd",
+    )
+
+    assert envelope["currency"] == "USD"
+    assert envelope["revenue"] == pytest.approx(20.0)
+    assert envelope["expense"] == pytest.approx(8.0)
+    assert envelope["current_margin"] == pytest.approx(0.6, abs=1e-4)
+    assert envelope["target_revenue"] == pytest.approx(11.43, abs=0.01)
+
+
 def test_determine_margin_envelope_with_basis_points():
     margins = determine_margin_envelope(
         {"total": "125000", "currency": "USD"},
