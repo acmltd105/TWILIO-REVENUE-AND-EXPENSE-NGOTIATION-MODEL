@@ -1,0 +1,39 @@
+{
+  "name": "twilio-negotiation-dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --config apps/pro-dashboard/vite.config.ts",
+    "build": "vite build --config apps/pro-dashboard/vite.config.ts",
+    "preview": "vite preview --config apps/pro-dashboard/vite.config.ts",
+    "lint": "eslint \"apps/pro-dashboard/src/**/*.{ts,tsx}\"",
+    "format": "prettier --write \"**/*.{ts,tsx,js,json,css,md}\""
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.43.4",
+    "@tanstack/react-query": "^5.51.15",
+    "classnames": "^2.5.1",
+    "d3-array": "^3.2.4",
+    "d3-scale": "^4.0.2",
+    "d3-shape": "^3.2.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.6",
+    "@types/react-dom": "^18.3.2",
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.10.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-react": "^7.35.2",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "postcss": "^8.4.45",
+    "prettier": "^3.3.3",
+    "tailwindcss": "^3.4.9",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.2"
+  }
+}
