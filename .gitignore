@@ -1,6 +1,14 @@
 __pycache__/
 *.pyc
+codex/merge-branches-and-deploy-to-local-kn8ate
+backend/.venv/
+web/node_modules/
+web/dist/
+web/.pnpm-store/
+desktop/target/
+=======
 node_modules/
 .pytest_cache/
 twilio_negotiation.egg-info/
 data/scenario_cache.json
+ main
