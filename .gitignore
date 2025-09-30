@@ -1,2 +1,7 @@
 __pycache__/
 *.pyc
+backend/.venv/
+web/node_modules/
+web/dist/
+web/.pnpm-store/
+desktop/target/
